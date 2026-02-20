@@ -1,7 +1,7 @@
 import {
   defaultFormatForDataType,
   formatsForDataType,
-  isQueryRunnable,
+  isDataTypeImplemented,
   normalizeQuery,
   validateQuery,
 } from './queryUtils';
@@ -27,12 +27,6 @@ describe('queryUtils', () => {
     expect(query.format).toBe('table');
   });
 
-  it('rejects unimplemented data types', () => {
-    const query: WazuhQuery = { refId: 'A', dataType: 'fim', format: 'table' };
-    expect(validateQuery(query)).toMatch(/not available yet/);
-    expect(isQueryRunnable(query)).toBe(false);
-  });
-
   it('rejects invalid rule level range', () => {
     const query: WazuhQuery = {
       refId: 'A',
@@ -41,5 +35,10 @@ describe('queryUtils', () => {
       filters: { ruleLevelMin: 10, ruleLevelMax: 5 },
     };
     expect(validateQuery(query)).toMatch(/Minimum rule level/);
+  });
+
+  it('includes all data types as implemented', () => {
+    expect(isDataTypeImplemented('fim')).toBe(true);
+    expect(formatsForDataType('vulnerabilities')).toContain('table');
   });
 });

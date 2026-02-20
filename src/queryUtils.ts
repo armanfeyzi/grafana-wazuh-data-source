@@ -1,6 +1,12 @@
 import { WazuhDataType, WazuhQuery, WazuhQueryFormat } from './types';
 
-export const IMPLEMENTED_DATA_TYPES: WazuhDataType[] = ['alerts', 'agents'];
+export const IMPLEMENTED_DATA_TYPES: WazuhDataType[] = [
+  'alerts',
+  'vulnerabilities',
+  'fim',
+  'sca',
+  'agents',
+];
 
 export const DATA_TYPE_LABELS: Record<WazuhDataType, string> = {
   alerts: 'Alerts',
@@ -17,7 +23,28 @@ export const FORMAT_LABELS: Record<WazuhQueryFormat, string> = {
 };
 
 const ALERT_FORMATS: WazuhQueryFormat[] = ['time_series', 'table', 'stat'];
+const VULNERABILITY_FORMATS: WazuhQueryFormat[] = ['table', 'stat', 'time_series'];
+const FIM_FORMATS: WazuhQueryFormat[] = ['time_series', 'table', 'stat'];
+const SCA_FORMATS: WazuhQueryFormat[] = ['table', 'time_series', 'stat'];
 const AGENT_FORMATS: WazuhQueryFormat[] = ['table'];
+
+export const FORMAT_HINTS: Partial<Record<WazuhDataType, Partial<Record<WazuhQueryFormat, string>>>> = {
+  sca: {
+    table: 'Current compliance scores (manager API)',
+    time_series: 'Historical scan activity (indexer alerts)',
+    stat: 'Total SCA scan events in range',
+  },
+  vulnerabilities: {
+    table: 'Affected packages and CVEs',
+    stat: 'Total open vulnerabilities',
+    time_series: 'Detections over time',
+  },
+  fim: {
+    table: 'Recent file integrity changes',
+    time_series: 'FIM events over time',
+    stat: 'Total FIM events in range',
+  },
+};
 
 export function isDataTypeImplemented(dataType: WazuhDataType): boolean {
   return IMPLEMENTED_DATA_TYPES.includes(dataType);
@@ -27,6 +54,12 @@ export function formatsForDataType(dataType: WazuhDataType): WazuhQueryFormat[] 
   switch (dataType) {
     case 'alerts':
       return ALERT_FORMATS;
+    case 'vulnerabilities':
+      return VULNERABILITY_FORMATS;
+    case 'fim':
+      return FIM_FORMATS;
+    case 'sca':
+      return SCA_FORMATS;
     case 'agents':
       return AGENT_FORMATS;
     default:
@@ -37,6 +70,12 @@ export function formatsForDataType(dataType: WazuhDataType): WazuhQueryFormat[] 
 export function defaultFormatForDataType(dataType: WazuhDataType): WazuhQueryFormat {
   switch (dataType) {
     case 'agents':
+      return 'table';
+    case 'vulnerabilities':
+      return 'table';
+    case 'fim':
+      return 'time_series';
+    case 'sca':
       return 'table';
     case 'alerts':
     default:
@@ -68,7 +107,7 @@ export function validateQuery(query: WazuhQuery): string | undefined {
   }
 
   if (!isDataTypeImplemented(query.dataType)) {
-    return `${DATA_TYPE_LABELS[query.dataType]} is not available yet (planned for a future release)`;
+    return `${DATA_TYPE_LABELS[query.dataType]} is not available yet`;
   }
 
   const allowedFormats = formatsForDataType(query.dataType);
@@ -102,9 +141,23 @@ export function isQueryRunnable(query: WazuhQuery): boolean {
 }
 
 export function showLimitField(dataType: WazuhDataType, format: WazuhQueryFormat): boolean {
-  return dataType === 'alerts' && format === 'table';
+  return format === 'table' && dataType !== 'agents';
 }
 
 export function showAlertFilters(dataType: WazuhDataType): boolean {
   return dataType === 'alerts';
+}
+
+export function showAgentFilter(dataType: WazuhDataType): boolean {
+  return ['alerts', 'vulnerabilities', 'fim', 'sca'].includes(dataType);
+}
+
+export function showSeverityFilter(dataType: WazuhDataType): boolean {
+  return dataType === 'vulnerabilities';
+}
+
+export const VULNERABILITY_SEVERITIES = ['Critical', 'High', 'Medium', 'Low', 'None'];
+
+export function formatHint(dataType: WazuhDataType, format: WazuhQueryFormat): string | undefined {
+  return FORMAT_HINTS[dataType]?.[format];
 }

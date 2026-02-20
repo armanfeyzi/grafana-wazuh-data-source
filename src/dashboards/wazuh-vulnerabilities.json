@@ -1,0 +1,98 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "links": [],
+  "panels": [
+    {
+      "datasource": { "type": "wazuh-datasource", "uid": "${datasource}" },
+      "fieldConfig": { "defaults": { "unit": "none" }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "id": 1,
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        {
+          "refId": "A",
+          "dataType": "vulnerabilities",
+          "format": "stat",
+          "filters": { "agentNames": ["$agent"], "severity": ["$severity"] }
+        }
+      ],
+      "title": "Open vulnerabilities",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "wazuh-datasource", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "drawStyle": "bars", "fillOpacity": 80, "lineWidth": 1, "stacking": { "mode": "normal" } }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 18, "x": 6, "y": 0 },
+      "id": 2,
+      "targets": [
+        {
+          "refId": "A",
+          "dataType": "vulnerabilities",
+          "format": "time_series",
+          "filters": { "agentNames": ["$agent"], "severity": ["$severity"] }
+        }
+      ],
+      "title": "Detections over time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "wazuh-datasource", "uid": "${datasource}" },
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 8 },
+      "id": 3,
+      "options": { "showHeader": true },
+      "targets": [
+        {
+          "refId": "A",
+          "dataType": "vulnerabilities",
+          "format": "table",
+          "limit": 100,
+          "filters": { "agentNames": ["$agent"], "severity": ["$severity"] }
+        }
+      ],
+      "title": "Affected packages and CVEs",
+      "type": "table"
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 39,
+  "tags": ["wazuh", "vulnerabilities"],
+  "templating": {
+    "list": [
+      {
+        "label": "Datasource",
+        "name": "datasource",
+        "query": "wazuh-datasource",
+        "type": "datasource"
+      },
+      {
+        "current": { "selected": true, "text": "All", "value": "$__all" },
+        "includeAll": true,
+        "label": "Agent",
+        "multi": true,
+        "name": "agent",
+        "query": "fedora,wazuh.manager",
+        "type": "custom"
+      },
+      {
+        "current": { "selected": true, "text": "All", "value": "$__all" },
+        "includeAll": true,
+        "label": "Severity",
+        "multi": true,
+        "name": "severity",
+        "query": "Critical,High,Medium,Low,None",
+        "type": "custom"
+      }
+    ]
+  },
+  "time": { "from": "now-7d", "to": "now" },
+  "timezone": "browser",
+  "title": "Wazuh — Vulnerabilities",
+  "uid": "wazuh-vulnerabilities",
+  "version": 1
+}

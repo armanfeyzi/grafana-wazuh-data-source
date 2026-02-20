@@ -61,6 +61,10 @@ func (s *PluginSettings) AlertsIndexPattern() string {
 	return s.IndexPrefix + "*"
 }
 
+func (s *PluginSettings) VulnerabilitiesIndexPattern() string {
+	return "wazuh-states-vulnerabilities-*"
+}
+
 func loadSecretPluginSettings(source map[string]string) *SecretPluginSettings {
 	return &SecretPluginSettings{
 		Password:        source["password"],

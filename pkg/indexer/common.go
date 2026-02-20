@@ -18,6 +18,9 @@ type queryParams struct {
 	Filters       models.QueryFilters
 }
 
+// QueryParams is the shared indexer query input.
+type QueryParams = queryParams
+
 // AlertQueryParamsFrom builds params from a Grafana data query.
 func AlertQueryParamsFrom(q backend.DataQuery, query models.Query) queryParams {
 	return queryParams{
@@ -63,8 +66,8 @@ func buildAlertFilters(from, to time.Time, f models.QueryFilters) []map[string]a
 		buildTimeRangeFilter(from, to, "@timestamp"),
 	}
 
-	if len(f.AgentNames) > 0 {
-		filters = append(filters, buildAgentNameFilter(f.AgentNames))
+	if len(f.AgentNamesForQuery()) > 0 {
+		filters = append(filters, buildAgentNameFilter(f.AgentNamesForQuery()))
 	}
 
 	if f.RuleLevelMin != nil || f.RuleLevelMax != nil {
@@ -95,13 +98,13 @@ func buildAlertFilters(from, to time.Time, f models.QueryFilters) []map[string]a
 
 func buildVulnerabilityFilters(f models.QueryFilters) []map[string]any {
 	filters := make([]map[string]any, 0, 2)
-	if len(f.AgentNames) > 0 {
-		filters = append(filters, buildAgentNameFilter(f.AgentNames))
+	if len(f.AgentNamesForQuery()) > 0 {
+		filters = append(filters, buildAgentNameFilter(f.AgentNamesForQuery()))
 	}
-	if len(f.Severity) > 0 {
+	if len(f.SeverityForQuery()) > 0 {
 		filters = append(filters, map[string]any{
 			"terms": map[string]any{
-				"vulnerability.severity": f.Severity,
+				"vulnerability.severity": f.SeverityForQuery(),
 			},
 		})
 	}

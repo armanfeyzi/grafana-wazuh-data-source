@@ -3,9 +3,43 @@ package indexer
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 )
+
+func BuildVulnerabilitiesTimeSeriesQuery(p queryParams) ([]byte, error) {
+	filters := buildVulnerabilityFilters(p.Filters)
+	interval := fixedInterval(p.From, p.To, p.MaxDataPoints)
+
+	body := map[string]any{
+		"size": 0,
+		"query": map[string]any{
+			"bool": map[string]any{
+				"filter": filters,
+			},
+		},
+		"aggs": map[string]any{
+			"histogram": map[string]any{
+				"date_histogram": map[string]any{
+					"field":          "vulnerability.detected_at",
+					"fixed_interval": interval,
+					"min_doc_count":  0,
+					"extended_bounds": map[string]any{
+						"min": p.From.UTC().Format(time.RFC3339),
+						"max": p.To.UTC().Format(time.RFC3339),
+					},
+				},
+			},
+		},
+	}
+
+	return json.Marshal(body)
+}
+
+func ParseVulnerabilitiesTimeSeriesFrame(raw []byte, refID string) (*data.Frame, error) {
+	return parseHistogramFrame(raw, refID, "vulnerabilities", "Detections")
+}
 
 func BuildVulnerabilitiesTableQuery(p queryParams) ([]byte, error) {
 	limit := clampLimit(p.Limit)
@@ -44,28 +78,6 @@ func BuildVulnerabilitiesStatQuery(p queryParams) ([]byte, error) {
 		"query": map[string]any{
 			"bool": map[string]any{
 				"filter": filters,
-			},
-		},
-	}
-
-	return json.Marshal(body)
-}
-
-func BuildVulnerabilitiesSeverityTableQuery(p queryParams) ([]byte, error) {
-	filters := buildVulnerabilityFilters(p.Filters)
-	body := map[string]any{
-		"size": 0,
-		"query": map[string]any{
-			"bool": map[string]any{
-				"filter": filters,
-			},
-		},
-		"aggs": map[string]any{
-			"severity": map[string]any{
-				"terms": map[string]any{
-					"field": "vulnerability.severity",
-					"size":  10,
-				},
 			},
 		},
 	}
@@ -118,27 +130,4 @@ func ParseVulnerabilitiesTableFrames(raw []byte, refID string) ([]*data.Frame, e
 
 func ParseVulnerabilitiesStatFrame(raw []byte, refID string) (*data.Frame, error) {
 	return parseTotalStatFrame(raw, refID, "vulnerabilities")
-}
-
-func ParseVulnerabilitiesSeverityTableFrames(raw []byte, refID string) ([]*data.Frame, error) {
-	var resp searchResponse
-	if err := json.Unmarshal(raw, &resp); err != nil {
-		return nil, fmt.Errorf("parse search response: %w", err)
-	}
-
-	severities := make([]string, 0, len(resp.Aggregations.Severity.Buckets))
-	counts := make([]int64, 0, len(resp.Aggregations.Severity.Buckets))
-	for _, bucket := range resp.Aggregations.Severity.Buckets {
-		severities = append(severities, bucket.Key)
-		counts = append(counts, bucket.DocCount)
-	}
-
-	frame := data.NewFrame("vulnerabilities")
-	frame.RefID = refID
-	frame.Fields = append(frame.Fields,
-		data.NewField("severity", nil, severities),
-		data.NewField("count", nil, counts),
-	)
-
-	return []*data.Frame{frame}, nil
 }

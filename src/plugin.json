@@ -24,5 +24,37 @@
   "dependencies": {
     "grafanaDependency": ">=10.4.0",
     "plugins": []
-  }
+  },
+  "includes": [
+    {
+      "type": "dashboard",
+      "name": "Security Overview",
+      "path": "dashboards/wazuh-security-overview.json",
+      "addToNav": true
+    },
+    {
+      "type": "dashboard",
+      "name": "Vulnerabilities",
+      "path": "dashboards/wazuh-vulnerabilities.json",
+      "addToNav": true
+    },
+    {
+      "type": "dashboard",
+      "name": "File Integrity (FIM)",
+      "path": "dashboards/wazuh-fim.json",
+      "addToNav": true
+    },
+    {
+      "type": "dashboard",
+      "name": "Security Configuration (SCA)",
+      "path": "dashboards/wazuh-sca.json",
+      "addToNav": true
+    },
+    {
+      "type": "dashboard",
+      "name": "Agent Status",
+      "path": "dashboards/wazuh-agent-status.json",
+      "addToNav": true
+    }
+  ]
 }

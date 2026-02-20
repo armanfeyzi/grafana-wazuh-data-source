@@ -5,12 +5,15 @@ import { DataSource } from '../datasource';
 import {
   DATA_TYPE_LABELS,
   FORMAT_LABELS,
+  VULNERABILITY_SEVERITIES,
+  formatHint,
   formatsForDataType,
-  isDataTypeImplemented,
   isQueryRunnable,
   normalizeQuery,
+  showAgentFilter,
   showAlertFilters,
   showLimitField,
+  showSeverityFilter,
   validateQuery,
 } from '../queryUtils';
 import { WazuhDataSourceOptions, WazuhDataType, WazuhQuery, WazuhQueryFormat } from '../types';
@@ -37,8 +40,6 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
       ALL_DATA_TYPES.map((value) => ({
         label: DATA_TYPE_LABELS[value],
         value,
-        isDisabled: !isDataTypeImplemented(value),
-        description: isDataTypeImplemented(value) ? undefined : 'Coming in a future release',
       })),
     []
   );
@@ -48,12 +49,15 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
       formatsForDataType(normalized.dataType).map((value) => ({
         label: FORMAT_LABELS[value],
         value,
+        description: formatHint(normalized.dataType, value),
       })),
     [normalized.dataType]
   );
 
+  const selectedFormatHint = formatHint(normalized.dataType, normalized.format);
+
   useEffect(() => {
-    if (!showAlertFilters(normalized.dataType)) {
+    if (!showAgentFilter(normalized.dataType)) {
       return;
     }
 
@@ -113,6 +117,16 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
     });
   };
 
+  const onSeverityChange = (options: Array<SelectableValue<string>>) => {
+    applyQuery({
+      ...normalized,
+      filters: {
+        ...normalized.filters,
+        severity: options.map((option) => option.value).filter((value): value is string => Boolean(value)),
+      },
+    });
+  };
+
   const onRuleGroupsChange = (groups: string[]) => {
     applyQuery({
       ...normalized,
@@ -154,6 +168,16 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
     return match ?? { label: name, value: name };
   });
 
+  const severityOptions = VULNERABILITY_SEVERITIES.map((severity) => ({
+    label: severity,
+    value: severity,
+  }));
+
+  const selectedSeverities = (normalized.filters?.severity ?? []).map((severity) => ({
+    label: severity,
+    value: severity,
+  }));
+
   return (
     <Stack gap={1} direction="column">
       {validationError && (
@@ -177,7 +201,7 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
           <InlineField
             label="Format"
             labelWidth={14}
-            tooltip="Time series = count over time; Table = latest events; Stat = total count"
+            tooltip={selectedFormatHint ?? 'Choose how results are shaped for the panel'}
           >
             <Select
               inputId="query-editor-format"
@@ -191,7 +215,7 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
         )}
 
         {showLimitField(normalized.dataType, normalized.format) && (
-          <InlineField label="Limit" labelWidth={14} tooltip="Maximum number of alert rows">
+          <InlineField label="Limit" labelWidth={14} tooltip="Maximum number of table rows">
             <Input
               type="number"
               width={10}
@@ -205,13 +229,38 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
         )}
       </Stack>
 
+      {showAgentFilter(normalized.dataType) && !showAlertFilters(normalized.dataType) && (
+        <Stack gap={0}>
+          <InlineField label="Agents" labelWidth={14} tooltip="Filter by agent name. Leave empty for all agents.">
+            <MultiSelect
+              inputId="query-editor-agents-filter"
+              options={agentOptions}
+              value={selectedAgents}
+              onChange={onAgentChange}
+              width={40}
+              placeholder="All agents"
+              allowCustomValue
+            />
+          </InlineField>
+
+          {showSeverityFilter(normalized.dataType) && (
+            <InlineField label="Severity" labelWidth={14} tooltip="Filter vulnerabilities by severity">
+              <MultiSelect
+                inputId="query-editor-severity"
+                options={severityOptions}
+                value={selectedSeverities}
+                onChange={onSeverityChange}
+                width={24}
+                placeholder="All severities"
+              />
+            </InlineField>
+          )}
+        </Stack>
+      )}
+
       {showAlertFilters(normalized.dataType) && (
         <Stack gap={0}>
-          <InlineField
-            label="Agents"
-            labelWidth={14}
-            tooltip="Filter alerts by agent name. Leave empty for all agents."
-          >
+          <InlineField label="Agents" labelWidth={14} tooltip="Filter alerts by agent name. Leave empty for all agents.">
             <MultiSelect
               inputId="query-editor-agents"
               options={agentOptions}
@@ -249,11 +298,7 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
             />
           </InlineField>
 
-          <InlineField
-            label="Rule groups"
-            labelWidth={14}
-            tooltip="Filter by Wazuh rule groups, e.g. sshd, syscheck"
-          >
+          <InlineField label="Rule groups" labelWidth={14} tooltip="Filter by Wazuh rule groups, e.g. sshd, syscheck">
             <Input
               width={40}
               placeholder="sshd, authentication (comma-separated)"

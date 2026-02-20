@@ -36,11 +36,11 @@ func TestValidateQueryAgentFormat(t *testing.T) {
 	}
 }
 
-func TestValidateQueryUnimplementedType(t *testing.T) {
+func TestValidateQueryUnknownType(t *testing.T) {
 	t.Parallel()
 
-	err := validateQuery(models.Query{DataType: models.DataTypeFIM})
+	err := validateQuery(models.Query{DataType: models.DataType("unknown")})
 	if err == nil {
-		t.Fatal("expected unimplemented data type error")
+		t.Fatal("expected unknown data type error")
 	}
 }

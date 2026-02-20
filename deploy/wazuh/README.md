@@ -56,7 +56,17 @@ On **Fedora + rootless Podman**, the dashboard UI may show:
 2001 - EACCES: permission denied, open '.../wazuh/config/wazuh.yml'
 ```
 
-### Prerequisites
+This happens when SELinux MCS categories on the bind-mounted file block the dashboard process (often after a container restart).
+
+### Quick fix
+
+```bash
+./deploy/wazuh/fix-dashboard-perms.sh
+```
+
+Then refresh **https://127.0.0.1:8443** and click **Check connection** — do not re-enter API settings; they are already in the file.
+
+### Manual fix
 
 1. **Stack must be running** — `exec` and the dashboard both need live containers:
 

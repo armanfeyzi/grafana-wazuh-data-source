@@ -45,6 +45,22 @@ podman pull docker.io/grafana/grafana-enterprise:12.4.0
 
 The plugin loads from `dist/` via Docker Compose. Provisioning example is in `provisioning/datasources/`.
 
+### Bundled dashboards
+
+Five dashboards ship with the plugin (also auto-provisioned in local dev under the **Wazuh** folder):
+
+| Dashboard | UID | Contents |
+|-----------|-----|----------|
+| Security Overview | `wazuh-security-overview` | Alert volume, latest events, agent count |
+| Vulnerabilities | `wazuh-vulnerabilities` | CVE table, severity filter, detection trend |
+| File Integrity (FIM) | `wazuh-fim` | Syscheck events over time and by path |
+| Security Configuration (SCA) | `wazuh-sca` | Live scores (API) + historical scans |
+| Agent Status | `wazuh-agent-status` | Full agent inventory |
+
+Template variables: **datasource**, **agent** (where applicable), **severity** (vulnerabilities). Edit the agent variable options to match your agent names (dynamic agent variables are Phase 6).
+
+After `npm run build`, dashboards are in `dist/dashboards/`. Restart Grafana to pick them up.
+
 ## Checks
 
 ```bash

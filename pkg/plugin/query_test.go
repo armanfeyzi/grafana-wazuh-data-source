@@ -100,7 +100,7 @@ func TestExecuteQueryUnsupportedType(t *testing.T) {
 	t.Parallel()
 
 	ds := &Datasource{}
-	_, err := ds.executeQuery(context.Background(), "A", models.Query{DataType: models.DataTypeFIM}, backend.DataQuery{})
+	_, err := ds.executeQuery(context.Background(), "A", models.Query{DataType: models.DataType("unknown")}, backend.DataQuery{})
 	if err == nil {
 		t.Fatal("expected error for unsupported data type")
 	}

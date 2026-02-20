@@ -20,8 +20,12 @@ patch_for_rootless_podman() {
     skip { next }
     /514:514\/udp/ { next }
     /443:5601/ { print "      - \"8443:5601\""; next }
-    /- \.\// && $0 !~ /:Z/ {
-      print $0 ":Z"
+    /- \.\// && $0 !~ /:Z/ && $0 !~ /:z/ {
+      if ($0 ~ /wazuh\.yml/) {
+        print $0 ":z"
+      } else {
+        print $0 ":Z"
+      }
       next
     }
     { print }
@@ -75,6 +79,8 @@ if uses_podman; then
   echo "==> Podman detected — patching compose for rootless + SELinux..."
   cp docker-compose.yml docker-compose.podman.yml
   patch_for_rootless_podman docker-compose.podman.yml
+  # Shared SELinux label on wazuh.yml bind mount (see fix-dashboard-perms.sh).
+  sed -i 's|/wazuh/config/wazuh.yml:Z|/wazuh/config/wazuh.yml:z|g' docker-compose.podman.yml
   COMPOSE_FILE="docker-compose.podman.yml"
   DASHBOARD_PORT="8443"
 fi

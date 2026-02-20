@@ -12,10 +12,11 @@ func validateQuery(qm models.Query) error {
 	}
 
 	switch qm.DataType {
-	case models.DataTypeAlerts, models.DataTypeAgents:
-		// supported
-	case models.DataTypeVulnerabilities, models.DataTypeFIM, models.DataTypeSCA:
-		return fmt.Errorf("data type %q is not implemented yet", qm.DataType)
+	case models.DataTypeAlerts,
+		models.DataTypeAgents,
+		models.DataTypeVulnerabilities,
+		models.DataTypeFIM,
+		models.DataTypeSCA:
 	default:
 		return fmt.Errorf("unknown data type %q", qm.DataType)
 	}
@@ -42,16 +43,30 @@ func validateFormat(qm models.Query) error {
 	}
 
 	switch qm.DataType {
-	case models.DataTypeAlerts:
+	case models.DataTypeAlerts, models.DataTypeFIM:
 		switch format {
 		case models.QueryFormatTimeSeries, models.QueryFormatTable, models.QueryFormatStat:
 			return nil
 		default:
-			return fmt.Errorf("unsupported alert format %q", format)
+			return fmt.Errorf("unsupported format %q", format)
+		}
+	case models.DataTypeVulnerabilities:
+		switch format {
+		case models.QueryFormatTable, models.QueryFormatStat, models.QueryFormatTimeSeries:
+			return nil
+		default:
+			return fmt.Errorf("unsupported format %q", format)
 		}
 	case models.DataTypeAgents:
 		if format != models.QueryFormatTable {
 			return fmt.Errorf("agent status only supports table format")
+		}
+	case models.DataTypeSCA:
+		switch format {
+		case models.QueryFormatTable, models.QueryFormatTimeSeries, models.QueryFormatStat:
+			return nil
+		default:
+			return fmt.Errorf("unsupported format %q", format)
 		}
 	}
 

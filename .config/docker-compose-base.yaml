@@ -16,6 +16,7 @@ services:
       # :Z relabels content for SELinux when using Podman on Fedora.
       - ./dist:/var/lib/grafana/plugins/wazuh-datasource:Z
       - ./provisioning:/etc/grafana/provisioning:Z
+      - ./dist/dashboards:/etc/grafana/provisioning/dashboards/wazuh:Z
       - .:/root/wazuh-datasource:Z
 
     environment:
