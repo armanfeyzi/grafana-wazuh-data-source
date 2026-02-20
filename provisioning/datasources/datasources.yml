@@ -1,0 +1,17 @@
+apiVersion: 1
+
+datasources:
+  - name: 'Wazuh'
+    type: 'wazuh-datasource'
+    access: proxy
+    isDefault: false
+    orgId: 1
+    version: 1
+    editable: true
+    jsonData:
+      managerUrl: 'https://localhost:55000'
+      indexerUrl: 'https://localhost:9200'
+      username: 'wazuh-wui'
+      tlsSkipVerify: true
+    secureJsonData:
+      password: 'wazuh-wui'
