@@ -17,9 +17,13 @@ go run github.com/magefile/mage@latest -v build:linux   # backend binary → dis
 docker compose up    # Grafana at http://localhost:3000
 ```
 
-Build `dist/` before starting Grafana. After code changes, keep `npm run dev` running and rebuild the backend when Go files change.
+Build `dist/` before starting Grafana. After code changes, keep `npm run dev` running and rebuild the backend when Go files change (`go run github.com/magefile/mage@latest -v build:linux`), then restart Grafana or the plugin process.
 
-In Grafana, open **Connections → Data sources** — a **Wazuh** entry is provisioned automatically from `provisioning/datasources/`. To add another instance manually, use **Add new data source** and search for "Wazuh".
+**Save & Test** checks connectivity to both the Wazuh manager API (JWT auth) and the indexer (`/_cluster/health`). Use real URLs and credentials from your Wazuh deployment; enable **Skip TLS verify** for self-signed certificates.
+
+When Grafana runs in Docker/Podman, the plugin backend also runs **inside the container**. Do not use `localhost` for Wazuh on your machine — use `host.containers.internal` (Linux Podman) or `host.docker.internal` instead. Example manager URL: `https://host.containers.internal:55000`.
+
+Before Phase 1, Save & Test only checked that required fields were set (always green). It now performs a real connection test, so you need Wazuh reachable at the configured URLs.
 
 On Fedora with Podman, if image pulls fail, ensure `docker.io` is allowed in `/etc/containers/registries.conf` or pull manually:
 

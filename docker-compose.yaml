@@ -11,3 +11,6 @@ services:
         grafana_version: ${GRAFANA_VERSION:-12.4.0}
         development: ${DEVELOPMENT:-false}
         anonymous_auth_enabled: ${ANONYMOUS_AUTH_ENABLED:-true}
+    extra_hosts:
+      - host.containers.internal:host-gateway
+      - host.docker.internal:host-gateway

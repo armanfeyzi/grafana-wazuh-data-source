@@ -9,7 +9,10 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/httpclient"
+	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/indexer"
 	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/models"
+	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/wazuhapi"
 )
 
 var (
@@ -18,11 +21,26 @@ var (
 	_ instancemgmt.InstanceDisposer = (*Datasource)(nil)
 )
 
-func NewDatasource(_ context.Context, _ backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
-	return &Datasource{}, nil
+func NewDatasource(_ context.Context, settings backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
+	config, err := models.LoadPluginSettings(settings)
+	if err != nil {
+		return nil, err
+	}
+
+	httpClient := httpclient.New(config.TlsSkipVerify)
+
+	return &Datasource{
+		settings: config,
+		wazuhAPI: wazuhapi.NewClient(config, httpClient),
+		indexer:  indexer.NewClient(config, httpClient),
+	}, nil
 }
 
-type Datasource struct{}
+type Datasource struct {
+	settings *models.PluginSettings
+	wazuhAPI *wazuhapi.Client
+	indexer  *indexer.Client
+}
 
 func (d *Datasource) Dispose() {}
 
@@ -57,31 +75,46 @@ func (d *Datasource) query(_ context.Context, query backend.DataQuery) backend.D
 	return backend.DataResponse{Frames: []*data.Frame{frame}}
 }
 
-func (d *Datasource) CheckHealth(_ context.Context, req *backend.CheckHealthRequest) (*backend.CheckHealthResult, error) {
+func (d *Datasource) CheckHealth(ctx context.Context, req *backend.CheckHealthRequest) (*backend.CheckHealthResult, error) {
 	config, err := models.LoadPluginSettings(*req.PluginContext.DataSourceInstanceSettings)
 	if err != nil {
-		return &backend.CheckHealthResult{
-			Status:  backend.HealthStatusError,
-			Message: "Unable to load settings",
-		}, nil
+		return healthError("Unable to load settings"), nil
 	}
 
-	switch {
-	case config.ManagerURL == "":
-		return healthError("Manager URL is required"), nil
-	case config.IndexerURL == "":
-		return healthError("Indexer URL is required"), nil
-	case config.Username == "":
-		return healthError("Username is required"), nil
-	case config.Secrets == nil || config.Secrets.Password == "":
-		return healthError("Password is required"), nil
+	if err := validateSettings(config); err != nil {
+		return healthError(err.Error()), nil
 	}
 
-	// Connectivity checks land in Phase 1.
+	if err := wazuhapi.ValidateURL(config.ManagerURL); err != nil {
+		return healthError(err.Error()), nil
+	}
+	if err := indexer.ValidateURL(config.IndexerURL); err != nil {
+		return healthError(err.Error()), nil
+	}
+
+	if err := d.wazuhAPI.Ping(ctx); err != nil {
+		return healthError(fmt.Sprintf("Wazuh manager API: %v", err)), nil
+	}
+
+	if err := d.indexer.Ping(ctx); err != nil {
+		return healthError(fmt.Sprintf("Wazuh indexer: %v", err)), nil
+	}
+
 	return &backend.CheckHealthResult{
 		Status:  backend.HealthStatusOk,
-		Message: "Configuration looks valid",
+		Message: "Connected to Wazuh manager API and indexer",
 	}, nil
+}
+
+func validateSettings(config *models.PluginSettings) error {
+	switch {
+	case config.Username == "":
+		return fmt.Errorf("Username is required")
+	case config.Secrets == nil || config.Secrets.Password == "":
+		return fmt.Errorf("Password is required")
+	default:
+		return nil
+	}
 }
 
 func healthError(message string) *backend.CheckHealthResult {
