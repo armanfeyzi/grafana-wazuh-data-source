@@ -1,20 +1,22 @@
 services:
   grafana:
     user: root
-    container_name: 'wazuh-datasource'
+    container_name: wazuh-datasource
 
     ports:
       - 3000:3000/tcp
-      - 2345:2345/tcp # delve
+      - 2345:2345/tcp
     security_opt:
-      - 'apparmor:unconfined'
-      - 'seccomp:unconfined'
+      - apparmor:unconfined
+      - seccomp:unconfined
     cap_add:
       - SYS_PTRACE
     volumes:
-      - ../dist:/var/lib/grafana/plugins/wazuh-datasource
-      - ../provisioning:/etc/grafana/provisioning
-      - ..:/root/wazuh-datasource
+      # Paths are relative to the project root (where docker-compose.yaml lives).
+      # :Z relabels content for SELinux when using Podman on Fedora.
+      - ./dist:/var/lib/grafana/plugins/wazuh-datasource:Z
+      - ./provisioning:/etc/grafana/provisioning:Z
+      - .:/root/wazuh-datasource:Z
 
     environment:
       NODE_ENV: development
