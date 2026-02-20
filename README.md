@@ -17,6 +17,12 @@ go run github.com/magefile/mage@latest -v build:linux   # backend binary → dis
 docker compose up    # Grafana at http://localhost:3000
 ```
 
+On Fedora with Podman, if image pulls fail, ensure `docker.io` is allowed in `/etc/containers/registries.conf` or pull manually:
+
+```bash
+podman pull docker.io/grafana/grafana-enterprise:12.4.0
+```
+
 The plugin loads from `dist/` via Docker Compose. Provisioning example is in `provisioning/datasources/`.
 
 ## Checks
