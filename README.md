@@ -1,0 +1,1 @@
+# grafana-wazuh-data-source-plugin
