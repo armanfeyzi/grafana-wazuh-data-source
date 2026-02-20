@@ -27,5 +27,5 @@ go.work.sum
 # env file
 .env
 
-# Local-only notes (not for remote)
+# Local-only notes
 .idea/
