@@ -4,11 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
-	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/httpclient"
 	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/indexer"
 	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/models"
@@ -54,7 +52,7 @@ func (d *Datasource) QueryData(ctx context.Context, req *backend.QueryDataReques
 	return response, nil
 }
 
-func (d *Datasource) query(_ context.Context, query backend.DataQuery) backend.DataResponse {
+func (d *Datasource) query(ctx context.Context, query backend.DataQuery) backend.DataResponse {
 	var qm models.Query
 
 	if err := json.Unmarshal(query.JSON, &qm); err != nil {
@@ -65,14 +63,12 @@ func (d *Datasource) query(_ context.Context, query backend.DataQuery) backend.D
 		return backend.ErrDataResponse(backend.StatusBadRequest, "dataType is required")
 	}
 
-	// Placeholder response until Phase 2 query engine is implemented.
-	frame := data.NewFrame("response")
-	frame.Fields = append(frame.Fields,
-		data.NewField("time", nil, []time.Time{query.TimeRange.From, query.TimeRange.To}),
-		data.NewField("values", nil, []int64{10, 20}),
-	)
+	resp, err := d.executeQuery(ctx, query.RefID, qm, query)
+	if err != nil {
+		return backend.ErrDataResponse(backend.StatusInternal, err.Error())
+	}
 
-	return backend.DataResponse{Frames: []*data.Frame{frame}}
+	return resp
 }
 
 func (d *Datasource) CheckHealth(ctx context.Context, req *backend.CheckHealthRequest) (*backend.CheckHealthResult, error) {

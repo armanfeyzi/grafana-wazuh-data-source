@@ -22,6 +22,7 @@ type QueryFilters struct {
 	AgentNames   []string `json:"agentNames,omitempty"`
 	RuleLevelMin *int     `json:"ruleLevelMin,omitempty"`
 	RuleLevelMax *int     `json:"ruleLevelMax,omitempty"`
+	RuleGroups   []string `json:"ruleGroups,omitempty"`
 	Severity     []string `json:"severity,omitempty"`
 }
 

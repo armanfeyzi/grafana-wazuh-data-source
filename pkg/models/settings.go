@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 )
@@ -48,6 +49,16 @@ func (s *PluginSettings) IndexerPass() string {
 		return s.Secrets.IndexerPassword
 	}
 	return s.Secrets.Password
+}
+
+func (s *PluginSettings) AlertsIndexPattern() string {
+	if s.IndexPrefix == "" {
+		return "wazuh-alerts-*"
+	}
+	if strings.HasSuffix(s.IndexPrefix, "*") {
+		return s.IndexPrefix
+	}
+	return s.IndexPrefix + "*"
 }
 
 func loadSecretPluginSettings(source map[string]string) *SecretPluginSettings {
