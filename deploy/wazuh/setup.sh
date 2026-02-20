@@ -79,8 +79,64 @@ if uses_podman; then
   DASHBOARD_PORT="8443"
 fi
 
+fix_dashboard_config_permissions() {
+  local wazuh_yml="${SINGLE_NODE}/config/wazuh_dashboard/wazuh.yml"
+  [[ -f "${wazuh_yml}" ]] || return 0
+
+  # Rootless Podman + :Z bind mounts can leave MCS categories that block the
+  # dashboard process from reading/writing wazuh.yml (EACCES in the UI).
+  # Keep host ownership as the lab user — do NOT chown from inside the container
+  # (that maps to an unprivileged subuid on the host and breaks chmod/edit).
+  chcon -t container_file_t -l s0 "${wazuh_yml}" 2>/dev/null || true
+  chmod 666 "${wazuh_yml}" 2>/dev/null || {
+    echo "    Could not chmod ${wazuh_yml} — if owned by a numeric UID, run:"
+    echo "      sudo chown \$(id -un):\$(id -gn) ${wazuh_yml}"
+    echo "    or delete and recreate the file, then re-run this script."
+  }
+}
+
+wait_for_manager_api() {
+  echo "==> Waiting for Wazuh manager API..."
+  for _ in $(seq 1 36); do
+    if curl -sk -m 3 -u 'wazuh-wui:MyS3cr37P450r.*-' -X POST \
+      'https://127.0.0.1:55000/security/user/authenticate?raw=true' 2>/dev/null \
+      | grep -qE '^[A-Za-z0-9._-]+$'; then
+      echo "    Manager API is up."
+      return 0
+    fi
+    sleep 5
+  done
+  echo "    Manager API not responding yet — check: podman logs single-node_wazuh.manager_1"
+  return 1
+}
+
+if [[ "${1:-}" == "reset" ]]; then
+  echo "==> Resetting Wazuh lab (removes volumes — all Wazuh data in volumes is lost)..."
+  docker compose -f "${COMPOSE_FILE}" down -v || true
+  echo "==> Starting fresh stack..."
+  docker compose -f "${COMPOSE_FILE}" up -d
+  if uses_podman; then
+    sleep 5
+    fix_dashboard_config_permissions
+  fi
+  wait_for_manager_api || true
+  cat <<EOF
+
+Reset complete. Dashboard: https://localhost:${DASHBOARD_PORT}
+Click "Check connection" in the Wazuh app settings — status should show Online.
+
+EOF
+  exit 0
+fi
+
 echo "==> Starting Wazuh stack..."
 docker compose -f "${COMPOSE_FILE}" up -d
+
+if uses_podman; then
+  sleep 5
+  echo "==> Fixing wazuh.yml permissions for dashboard (Podman)..."
+  fix_dashboard_config_permissions
+fi
 
 cat <<EOF
 

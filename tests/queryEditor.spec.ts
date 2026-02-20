@@ -15,10 +15,9 @@ test('should trigger new query when format is changed', async ({ panelEditPage, 
   await expect(await queryReq).toBeTruthy();
 });
 
-test('data query should return placeholder values', async ({ panelEditPage, readProvisionedDataSource }) => {
+test('data query should succeed', async ({ panelEditPage, readProvisionedDataSource }) => {
   const ds = await readProvisionedDataSource({ fileName: 'datasources.yml' });
   await panelEditPage.datasource.set(ds.name);
   await panelEditPage.setVisualization('Table');
   await expect(panelEditPage.refreshPanel()).toBeOK();
-  await expect(panelEditPage.panel.data).toContainText(['10', '20']);
 });

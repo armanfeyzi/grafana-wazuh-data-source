@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/indexer"
 	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/models"
 	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/wazuhapi"
