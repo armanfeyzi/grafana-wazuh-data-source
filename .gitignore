@@ -58,3 +58,6 @@ go.work.sum
 
 # env
 .env
+
+# Local Wazuh lab clone (deploy/wazuh/setup.sh)
+deploy/wazuh/lab/

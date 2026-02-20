@@ -28,6 +28,32 @@ func TestLoadPluginSettings(t *testing.T) {
 	if settings.Secrets.Password != "secret" {
 		t.Fatalf("unexpected password: %s", settings.Secrets.Password)
 	}
+	if settings.IndexerUser() != "admin" {
+		t.Fatalf("expected fallback indexer user admin, got %s", settings.IndexerUser())
+	}
+}
+
+func TestIndexerCredentialsOverride(t *testing.T) {
+	settings, err := LoadPluginSettings(backend.DataSourceInstanceSettings{
+		JSONData: json.RawMessage(`{
+			"username": "wazuh-wui",
+			"indexerUsername": "admin"
+		}`),
+		DecryptedSecureJSONData: map[string]string{
+			"password":        "api-pass",
+			"indexerPassword": "indexer-pass",
+		},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if settings.IndexerUser() != "admin" {
+		t.Fatalf("unexpected indexer user: %s", settings.IndexerUser())
+	}
+	if settings.IndexerPass() != "indexer-pass" {
+		t.Fatalf("unexpected indexer password: %s", settings.IndexerPass())
+	}
 }
 
 func TestQueryUnmarshal(t *testing.T) {

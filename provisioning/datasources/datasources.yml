@@ -9,10 +9,11 @@ datasources:
     version: 1
     editable: true
     jsonData:
-      # Use host.containers.internal (not localhost) — the plugin backend runs inside Grafana's container.
       managerUrl: 'https://host.containers.internal:55000'
       indexerUrl: 'https://host.containers.internal:9200'
       username: 'wazuh-wui'
+      indexerUsername: 'admin'
       tlsSkipVerify: true
     secureJsonData:
-      password: 'wazuh-wui'
+      password: 'MyS3cr37P450r.*-'
+      indexerPassword: 'SecretPassword'

@@ -8,16 +8,18 @@ import (
 )
 
 type PluginSettings struct {
-	ManagerURL    string                `json:"managerUrl"`
-	IndexerURL    string                `json:"indexerUrl"`
-	Username      string                `json:"username"`
-	TlsSkipVerify bool                  `json:"tlsSkipVerify"`
-	IndexPrefix   string                `json:"indexPrefix"`
-	Secrets       *SecretPluginSettings `json:"-"`
+	ManagerURL      string                `json:"managerUrl"`
+	IndexerURL      string                `json:"indexerUrl"`
+	Username        string                `json:"username"`
+	IndexerUsername string                `json:"indexerUsername"`
+	TlsSkipVerify   bool                  `json:"tlsSkipVerify"`
+	IndexPrefix     string                `json:"indexPrefix"`
+	Secrets         *SecretPluginSettings `json:"-"`
 }
 
 type SecretPluginSettings struct {
-	Password string
+	Password        string
+	IndexerPassword string
 }
 
 func LoadPluginSettings(source backend.DataSourceInstanceSettings) (*PluginSettings, error) {
@@ -31,8 +33,26 @@ func LoadPluginSettings(source backend.DataSourceInstanceSettings) (*PluginSetti
 	return &settings, nil
 }
 
+func (s *PluginSettings) IndexerUser() string {
+	if s.IndexerUsername != "" {
+		return s.IndexerUsername
+	}
+	return s.Username
+}
+
+func (s *PluginSettings) IndexerPass() string {
+	if s.Secrets == nil {
+		return ""
+	}
+	if s.Secrets.IndexerPassword != "" {
+		return s.Secrets.IndexerPassword
+	}
+	return s.Secrets.Password
+}
+
 func loadSecretPluginSettings(source map[string]string) *SecretPluginSettings {
 	return &SecretPluginSettings{
-		Password: source["password"],
+		Password:        source["password"],
+		IndexerPassword: source["indexerPassword"],
 	}
 }

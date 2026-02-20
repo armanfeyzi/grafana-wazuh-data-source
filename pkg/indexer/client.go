@@ -21,8 +21,8 @@ type Client struct {
 func NewClient(settings *models.PluginSettings, httpClient *http.Client) *Client {
 	return &Client{
 		baseURL:    strings.TrimRight(settings.IndexerURL, "/"),
-		username:   settings.Username,
-		password:   settings.Secrets.Password,
+		username:   settings.IndexerUser(),
+		password:   settings.IndexerPass(),
 		httpClient: httpClient,
 	}
 }

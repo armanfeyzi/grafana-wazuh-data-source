@@ -112,6 +112,10 @@ func validateSettings(config *models.PluginSettings) error {
 		return fmt.Errorf("Username is required")
 	case config.Secrets == nil || config.Secrets.Password == "":
 		return fmt.Errorf("Password is required")
+	case config.IndexerUser() == "":
+		return fmt.Errorf("Indexer username is required")
+	case config.IndexerPass() == "":
+		return fmt.Errorf("Indexer password is required")
 	default:
 		return nil
 	}

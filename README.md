@@ -25,6 +25,18 @@ When Grafana runs in Docker/Podman, the plugin backend also runs **inside the co
 
 Before Phase 1, Save & Test only checked that required fields were set (always green). It now performs a real connection test, so you need Wazuh reachable at the configured URLs.
 
+### Local Wazuh lab
+
+For development without a remote cluster, run the official single-node stack:
+
+```bash
+sudo sysctl -w vm.max_map_count=262144
+chmod +x deploy/wazuh/setup.sh
+./deploy/wazuh/setup.sh
+```
+
+See [deploy/wazuh/README.md](deploy/wazuh/README.md) for credentials and Grafana settings. Manager API and indexer use different users (`wazuh-wui` vs `admin`).
+
 On Fedora with Podman, if image pulls fail, ensure `docker.io` is allowed in `/etc/containers/registries.conf` or pull manually:
 
 ```bash

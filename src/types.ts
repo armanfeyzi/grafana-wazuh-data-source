@@ -31,10 +31,12 @@ export interface WazuhDataSourceOptions extends DataSourceJsonData {
   managerUrl?: string;
   indexerUrl?: string;
   username?: string;
+  indexerUsername?: string;
   tlsSkipVerify?: boolean;
   indexPrefix?: string;
 }
 
 export interface WazuhSecureJsonData {
   password?: string;
+  indexerPassword?: string;
 }

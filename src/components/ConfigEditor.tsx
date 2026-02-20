@@ -33,7 +33,18 @@ export function ConfigEditor(props: Props) {
     onOptionsChange({
       ...options,
       secureJsonData: {
+        ...secureJsonData,
         password: event.target.value,
+      },
+    });
+  };
+
+  const onIndexerPasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onOptionsChange({
+      ...options,
+      secureJsonData: {
+        ...secureJsonData,
+        indexerPassword: event.target.value,
       },
     });
   };
@@ -46,33 +57,52 @@ export function ConfigEditor(props: Props) {
         password: false,
       },
       secureJsonData: {
-        ...options.secureJsonData,
+        ...secureJsonData,
         password: '',
+      },
+    });
+  };
+
+  const onResetIndexerPassword = () => {
+    onOptionsChange({
+      ...options,
+      secureJsonFields: {
+        ...options.secureJsonFields,
+        indexerPassword: false,
+      },
+      secureJsonData: {
+        ...secureJsonData,
+        indexerPassword: '',
       },
     });
   };
 
   return (
     <>
-      <InlineField label="Manager URL" labelWidth={14} interactive tooltip="Wazuh manager API base URL">
+      <InlineField label="Manager URL" labelWidth={16} interactive tooltip="Wazuh manager API base URL">
         <Input
           id="config-editor-manager-url"
           onChange={onJsonChange('managerUrl')}
           value={jsonData.managerUrl || ''}
-          placeholder="https://wazuh.example.com:55000"
+          placeholder="https://host.containers.internal:55000"
           width={50}
         />
       </InlineField>
-      <InlineField label="Indexer URL" labelWidth={14} interactive tooltip="Wazuh indexer (OpenSearch) base URL">
+      <InlineField label="Indexer URL" labelWidth={16} interactive tooltip="Wazuh indexer (OpenSearch) base URL">
         <Input
           id="config-editor-indexer-url"
           onChange={onJsonChange('indexerUrl')}
           value={jsonData.indexerUrl || ''}
-          placeholder="https://indexer.example.com:9200"
+          placeholder="https://host.containers.internal:9200"
           width={50}
         />
       </InlineField>
-      <InlineField label="Username" labelWidth={14} interactive>
+      <InlineField
+        label="API username"
+        labelWidth={16}
+        interactive
+        tooltip="Wazuh manager API user (e.g. wazuh-wui)"
+      >
         <Input
           id="config-editor-username"
           onChange={onJsonChange('username')}
@@ -81,7 +111,7 @@ export function ConfigEditor(props: Props) {
           width={30}
         />
       </InlineField>
-      <InlineField label="Password" labelWidth={14} interactive tooltip="Stored securely; sent to the backend only">
+      <InlineField label="API password" labelWidth={16} interactive tooltip="Stored securely; sent to the backend only">
         <SecretInput
           required
           id="config-editor-password"
@@ -93,7 +123,37 @@ export function ConfigEditor(props: Props) {
           onChange={onPasswordChange}
         />
       </InlineField>
-      <InlineField label="Skip TLS verify" labelWidth={14} interactive>
+      <InlineField
+        label="Indexer username"
+        labelWidth={16}
+        interactive
+        tooltip="OpenSearch user; leave empty to reuse API username"
+      >
+        <Input
+          id="config-editor-indexer-username"
+          onChange={onJsonChange('indexerUsername')}
+          value={jsonData.indexerUsername || ''}
+          placeholder="admin"
+          width={30}
+        />
+      </InlineField>
+      <InlineField
+        label="Indexer password"
+        labelWidth={16}
+        interactive
+        tooltip="Leave empty to reuse API password"
+      >
+        <SecretInput
+          id="config-editor-indexer-password"
+          isConfigured={secureJsonFields.indexerPassword}
+          value={secureJsonData?.indexerPassword}
+          placeholder="Optional"
+          width={30}
+          onReset={onResetIndexerPassword}
+          onChange={onIndexerPasswordChange}
+        />
+      </InlineField>
+      <InlineField label="Skip TLS verify" labelWidth={16} interactive>
         <Checkbox id="config-editor-tls-skip" value={jsonData.tlsSkipVerify} onChange={onTlsSkipVerifyChange} />
       </InlineField>
     </>
