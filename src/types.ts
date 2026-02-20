@@ -9,7 +9,13 @@ export interface WazuhQueryFilters {
   agentNames?: string[];
   ruleLevelMin?: number;
   ruleLevelMax?: number;
+  ruleGroups?: string[];
   severity?: string[];
+}
+
+export interface AgentOption {
+  label: string;
+  value: string;
 }
 
 export interface WazuhQuery extends DataQuery {

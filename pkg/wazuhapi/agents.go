@@ -32,6 +32,11 @@ type agentItem struct {
 	} `json:"os"`
 }
 
+type AgentOption struct {
+	Label string `json:"label"`
+	Value string `json:"value"`
+}
+
 func (c *Client) ListAgents(ctx context.Context, limit int) ([]byte, error) {
 	if limit <= 0 {
 		limit = 500
@@ -140,4 +145,28 @@ func ParseAgentsFrame(raw []byte, refID string) (*data.Frame, error) {
 	)
 
 	return frame, nil
+}
+
+func ParseAgentOptions(raw []byte) ([]AgentOption, error) {
+	var resp agentsResponse
+	if err := json.Unmarshal(raw, &resp); err != nil {
+		return nil, fmt.Errorf("parse agents response: %w", err)
+	}
+
+	options := make([]AgentOption, 0, len(resp.Data.AffectedItems))
+	for _, item := range resp.Data.AffectedItems {
+		if item.Name == "" {
+			continue
+		}
+		label := item.Name
+		if item.ID != "" {
+			label = fmt.Sprintf("%s (%s)", item.Name, item.ID)
+		}
+		options = append(options, AgentOption{
+			Label: label,
+			Value: item.Name,
+		})
+	}
+
+	return options, nil
 }

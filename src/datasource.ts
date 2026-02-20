@@ -1,7 +1,8 @@
 import { DataSourceInstanceSettings, CoreApp } from '@grafana/data';
 import { DataSourceWithBackend } from '@grafana/runtime';
 
-import { WazuhQuery, WazuhDataSourceOptions, DEFAULT_QUERY } from './types';
+import { AgentOption, WazuhQuery, WazuhDataSourceOptions, DEFAULT_QUERY } from './types';
+import { isQueryRunnable, normalizeQuery } from './queryUtils';
 
 export class DataSource extends DataSourceWithBackend<WazuhQuery, WazuhDataSourceOptions> {
   constructor(instanceSettings: DataSourceInstanceSettings<WazuhDataSourceOptions>) {
@@ -13,6 +14,10 @@ export class DataSource extends DataSourceWithBackend<WazuhQuery, WazuhDataSourc
   }
 
   filterQuery(query: WazuhQuery): boolean {
-    return Boolean(query.dataType);
+    return isQueryRunnable(normalizeQuery(query));
+  }
+
+  async getAgents(): Promise<AgentOption[]> {
+    return this.getResource<AgentOption[]>('agents');
   }
 }

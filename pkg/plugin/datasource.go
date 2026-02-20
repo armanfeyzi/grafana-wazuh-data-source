@@ -16,6 +16,7 @@ import (
 var (
 	_ backend.QueryDataHandler      = (*Datasource)(nil)
 	_ backend.CheckHealthHandler    = (*Datasource)(nil)
+	_ backend.CallResourceHandler   = (*Datasource)(nil)
 	_ instancemgmt.InstanceDisposer = (*Datasource)(nil)
 )
 
@@ -61,6 +62,10 @@ func (d *Datasource) query(ctx context.Context, query backend.DataQuery) backend
 
 	if qm.DataType == "" {
 		return backend.ErrDataResponse(backend.StatusBadRequest, "dataType is required")
+	}
+
+	if err := validateQuery(qm); err != nil {
+		return backend.ErrDataResponse(backend.StatusBadRequest, err.Error())
 	}
 
 	resp, err := d.executeQuery(ctx, query.RefID, qm, query)

@@ -34,3 +34,27 @@ func TestParseAgentsFrame(t *testing.T) {
 		t.Fatalf("unexpected status: %v", frame.Fields[2].At(0))
 	}
 }
+
+func TestParseAgentOptions(t *testing.T) {
+	t.Parallel()
+
+	raw := []byte(`{
+		"data": {
+			"affected_items": [
+				{"id": "001", "name": "fedora"},
+				{"id": "000", "name": "wazuh.manager"}
+			]
+		}
+	}`)
+
+	options, err := ParseAgentOptions(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(options) != 2 {
+		t.Fatalf("expected 2 options, got %d", len(options))
+	}
+	if options[0].Value != "fedora" || options[0].Label != "fedora (001)" {
+		t.Fatalf("unexpected first option: %+v", options[0])
+	}
+}

@@ -6,12 +6,16 @@ import (
 	"time"
 
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/models"
 )
 
-type alertQueryParams = queryParams
+func buildFIMFilters(from, to time.Time, f models.QueryFilters) []map[string]any {
+	filters := buildAlertFilters(from, to, f)
+	return appendRuleGroupFilter(filters, "syscheck")
+}
 
-func BuildAlertsTimeSeriesQuery(p alertQueryParams) ([]byte, error) {
-	filters := buildAlertFilters(p.From, p.To, p.Filters)
+func BuildFIMTimeSeriesQuery(p queryParams) ([]byte, error) {
+	filters := buildFIMFilters(p.From, p.To, p.Filters)
 	interval := fixedInterval(p.From, p.To, p.MaxDataPoints)
 
 	body := map[string]any{
@@ -39,10 +43,10 @@ func BuildAlertsTimeSeriesQuery(p alertQueryParams) ([]byte, error) {
 	return json.Marshal(body)
 }
 
-func BuildAlertsTableQuery(p alertQueryParams) ([]byte, error) {
+func BuildFIMTableQuery(p queryParams) ([]byte, error) {
 	limit := clampLimit(p.Limit)
+	filters := buildFIMFilters(p.From, p.To, p.Filters)
 
-	filters := buildAlertFilters(p.From, p.To, p.Filters)
 	body := map[string]any{
 		"size": limit,
 		"sort": []map[string]any{
@@ -57,18 +61,20 @@ func BuildAlertsTableQuery(p alertQueryParams) ([]byte, error) {
 			"@timestamp",
 			"agent.name",
 			"agent.id",
-			"rule.id",
-			"rule.level",
+			"syscheck.path",
+			"syscheck.event",
+			"syscheck.mode",
+			"syscheck.uname_after",
+			"syscheck.uid_after",
 			"rule.description",
-			"rule.groups",
 		},
 	}
 
 	return json.Marshal(body)
 }
 
-func BuildAlertsStatQuery(p alertQueryParams) ([]byte, error) {
-	filters := buildAlertFilters(p.From, p.To, p.Filters)
+func BuildFIMStatQuery(p queryParams) ([]byte, error) {
+	filters := buildFIMFilters(p.From, p.To, p.Filters)
 	body := map[string]any{
 		"size":             0,
 		"track_total_hits": true,
@@ -82,11 +88,11 @@ func BuildAlertsStatQuery(p alertQueryParams) ([]byte, error) {
 	return json.Marshal(body)
 }
 
-func ParseAlertsTimeSeriesFrame(raw []byte, refID string) (*data.Frame, error) {
-	return parseHistogramFrame(raw, refID, "alerts", "Alerts")
+func ParseFIMTimeSeriesFrame(raw []byte, refID string) (*data.Frame, error) {
+	return parseHistogramFrame(raw, refID, "fim", "FIM events")
 }
 
-func ParseAlertsTableFrames(raw []byte, refID string) ([]*data.Frame, error) {
+func ParseFIMTableFrames(raw []byte, refID string) ([]*data.Frame, error) {
 	var resp searchResponse
 	if err := json.Unmarshal(raw, &resp); err != nil {
 		return nil, fmt.Errorf("parse search response: %w", err)
@@ -95,37 +101,45 @@ func ParseAlertsTableFrames(raw []byte, refID string) ([]*data.Frame, error) {
 	times := make([]time.Time, 0, len(resp.Hits.Hits))
 	agents := make([]string, 0, len(resp.Hits.Hits))
 	agentIDs := make([]string, 0, len(resp.Hits.Hits))
-	ruleIDs := make([]string, 0, len(resp.Hits.Hits))
-	levels := make([]int64, 0, len(resp.Hits.Hits))
+	paths := make([]string, 0, len(resp.Hits.Hits))
+	events := make([]string, 0, len(resp.Hits.Hits))
+	users := make([]string, 0, len(resp.Hits.Hits))
 	descriptions := make([]string, 0, len(resp.Hits.Hits))
-	groups := make([]string, 0, len(resp.Hits.Hits))
 
 	for _, hit := range resp.Hits.Hits {
 		src := hit.Source
 		times = append(times, parseTimestamp(src["@timestamp"]))
 		agents = append(agents, nestedString(src, "agent", "name"))
 		agentIDs = append(agentIDs, nestedString(src, "agent", "id"))
-		ruleIDs = append(ruleIDs, nestedString(src, "rule", "id"))
-		levels = append(levels, nestedInt64(src, "rule", "level"))
+		paths = append(paths, nestedString(src, "syscheck", "path"))
+		event := nestedString(src, "syscheck", "event")
+		if event == "" {
+			event = nestedString(src, "syscheck", "mode")
+		}
+		events = append(events, event)
+		user := nestedString(src, "syscheck", "uname_after")
+		if user == "" {
+			user = nestedString(src, "syscheck", "uid_after")
+		}
+		users = append(users, user)
 		descriptions = append(descriptions, nestedString(src, "rule", "description"))
-		groups = append(groups, joinGroups(nestedStringSlice(src, "rule", "groups")))
 	}
 
-	frame := data.NewFrame("alerts")
+	frame := data.NewFrame("fim")
 	frame.RefID = refID
 	frame.Fields = append(frame.Fields,
 		data.NewField("Time", nil, times),
 		data.NewField("agent", nil, agents),
 		data.NewField("agent_id", nil, agentIDs),
-		data.NewField("rule_id", nil, ruleIDs),
-		data.NewField("severity_level", nil, levels),
-		data.NewField("rule_description", nil, descriptions),
-		data.NewField("rule_groups", nil, groups),
+		data.NewField("path", nil, paths),
+		data.NewField("event", nil, events),
+		data.NewField("user", nil, users),
+		data.NewField("description", nil, descriptions),
 	)
 
 	return []*data.Frame{frame}, nil
 }
 
-func ParseAlertsStatFrame(raw []byte, refID string) (*data.Frame, error) {
-	return parseTotalStatFrame(raw, refID, "alerts")
+func ParseFIMStatFrame(raw []byte, refID string) (*data.Frame, error) {
+	return parseTotalStatFrame(raw, refID, "fim")
 }
