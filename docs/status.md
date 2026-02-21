@@ -1,6 +1,6 @@
 # Project status
 
-**Last updated:** 2026-05-22
+**Last updated:** 2026-05-22 (Phase 6 complete)
 
 Living summary of what is implemented, what was fixed recently, and what comes next. Task detail: [milestones.md](./milestones.md). Architecture: [project-roadmap.md](./project-roadmap.md).
 
@@ -16,7 +16,7 @@ Living summary of what is implemented, what was fixed recently, and what comes n
 | 3 | Query editor UI | **Done** |
 | 4 | Vulnerabilities, FIM, SCA | **Done** |
 | 5 | Bundled dashboards | **Done** |
-| 6 | Correlation & variables | **Partial** |
+| 6 | Correlation & variables | **Done** |
 | 7 | Release hardening | **Not started** |
 | — | Deployment architecture refactor | **Done** |
 
@@ -58,10 +58,14 @@ Grafana container reaches cluster Wazuh via `https://host.containers.internal:55
 
 ---
 
-## Recent fixes (2026-05-22)
+## Recent fixes/additions (2026-05-22)
 
-| Issue | Cause | Fix |
-|-------|--------|-----|
+| Change | Details |
+|--------|---------|
+| Namespace template variable | New `/namespaces` resource endpoint queries `kubernetes.namespace` agg from `wazuh-alerts-*`; returns empty list on non-k8s deployments |
+| `VariableQueryEditor` picker | Replaced invisible placeholder with Select: **Agents** / **Namespaces** |
+| Mixed correlation dashboard | New bundled dashboard `wazuh-mixed-prometheus-example` — Prometheus node CPU + Wazuh alerts sharing `$agent` variable |
+| Field mapping doc | `docs/field-mapping.md` — all normalized plugin fields, Prometheus label correlation patterns |
 | Dashboard agent dropdown hardcoded | Dashboard used custom variable; no plugin variable support | `CustomVariableSupport` + query-type `$agent` variable |
 | Panels empty with `$agent` filter | Literal `$agent` sent to backend | `applyTemplateVariables` on datasource; backend ignores unresolved `$…` |
 | Datasource lost on restart | No persistent volume / provisioning | Grafana data volume + file provisioning in `deploy/dev/` |
@@ -86,19 +90,12 @@ Spec: [superpowers/specs/2026-05-22-deployment-architecture-design.md](./superpo
 
 ## What's next
 
-### Phase 6 — finish correlation (current focus)
-1. **Namespace template variable** — when Kubernetes metadata exists in Wazuh alert data
-2. **Mixed dashboard example** — Prometheus node metrics + Wazuh alerts filtered by shared `$agent`
-3. **Field mapping guide** — normalized plugin fields ↔ Prometheus/Loki labels
-4. **GitOps provisioning polish** — production examples only in `provisioning/examples/`
-
-### Phase 7 — release prep
-1. User-facing error messages (auth, timeout, missing index, RBAC)
-2. Performance check (7-day alert time series on a medium deployment)
-3. Security review (credentials in logs, TLS defaults, RBAC guide)
-4. `CONTRIBUTING.md`, full troubleshooting guide
-5. **v0.1.0** — CHANGELOG, signed plugin ZIP, GitHub release
-6. Optional: Grafana marketplace submission
+### Phase 7 — release prep (current focus)
+1. **User-facing error messages** — auth, timeout, missing index, RBAC denied — all readable
+2. **Performance check** — 7-day alert time series < 10s on medium deployment
+3. **Security review** — no credentials in logs, TLS defaults, RBAC guide
+4. **`CONTRIBUTING.md`** — dev setup, architecture overview, how to add a data type
+5. **v0.1.0** — signed plugin ZIP, GitHub release with changelog, declared Grafana versions in `plugin.json`
 
 ### Later (v1.1+)
 - Separate Manager API vs Indexer credentials

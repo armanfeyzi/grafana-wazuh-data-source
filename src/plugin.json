@@ -55,6 +55,12 @@
       "name": "Agent Status",
       "path": "dashboards/wazuh-agent-status.json",
       "addToNav": true
+    },
+    {
+      "type": "dashboard",
+      "name": "Correlation with Prometheus (Example)",
+      "path": "dashboards/wazuh-mixed-example.json",
+      "addToNav": true
     }
   ]
 }

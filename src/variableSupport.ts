@@ -38,7 +38,11 @@ export class WazuhVariableSupport extends CustomVariableSupport<DataSource, Wazu
   }
 
   query(request: DataQueryRequest<WazuhVariableQuery>): Observable<DataQueryResponse> {
-    return from(this.datasource.metricFindQuery()).pipe(
+    // Forward the query type from the first target so metricFindQuery can
+    // dispatch to the correct resource endpoint (agents or namespaces).
+    const queryType = request.targets[0]?.query;
+
+    return from(this.datasource.metricFindQuery(queryType)).pipe(
       map((values) => ({
         data: [toVariableFrame(values)],
       }))

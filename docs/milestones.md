@@ -17,7 +17,7 @@ Task list for the Wazuh Grafana datasource plugin. Architecture detail: [project
 | 3 — Query editor | ✅ Complete |
 | 4 — Extended data types | ✅ Complete |
 | 5 — Dashboards | ✅ Complete |
-| 6 — Correlation | 🟡 Partial (agent variable done) |
+| 6 — Correlation | ✅ Complete |
 | 7 — Release prep | ⬜ Not started |
 | Deployment refactor | ✅ Complete |
 
@@ -103,18 +103,18 @@ Task list for the Wazuh Grafana datasource plugin. Architecture detail: [project
 
 ---
 
-## Phase 6 — Correlation 🟡
+## Phase 6 — Correlation ✅
 
 | Task | Done when | Status |
 |------|-----------|--------|
 | Agent variable | Template var from datasource agent list | ✅ |
 | Panel filter interpolation | `applyTemplateVariables` for `$agent`, `$severity` | ✅ |
-| Namespace variable | Exposed when k8s metadata exists in data | ⬜ |
-| Mixed example dashboard | Prometheus CPU + Wazuh alerts on shared `$agent` | ⬜ |
-| Field mapping doc | Normalized labels ↔ Prometheus labels | ⬜ |
-| Provisioning sample | Example datasource YAML for GitOps | 🟡 (`provisioning/examples/` + `deploy/kubernetes/`) |
+| Namespace variable | Exposed when k8s metadata exists in data | ✅ |
+| Mixed example dashboard | Prometheus CPU + Wazuh alerts on shared `$agent` | ✅ |
+| Field mapping doc | Normalized labels ↔ Prometheus labels | ✅ |
+| Provisioning sample | Example datasource YAML for GitOps | ✅ |
 
-**Phase done when:** one variable filters Prometheus and Wazuh panels on the same row.
+**Phase done when:** one variable filters Prometheus and Wazuh panels on the same row. ✅
 
 ---
 

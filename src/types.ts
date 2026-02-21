@@ -47,7 +47,10 @@ export interface WazuhSecureJsonData {
   indexerPassword?: string;
 }
 
-/** Query model for dashboard template variables (agent list). */
+/** Supported variable query types for Wazuh template variables. */
+export type WazuhVariableQueryType = 'agents' | 'namespaces';
+
+/** Query model for dashboard template variables. */
 export interface WazuhVariableQuery extends DataQuery {
-  query?: string;
+  query?: WazuhVariableQueryType;
 }
