@@ -1,7 +1,8 @@
 # Wazuh Grafana Datasource Plugin — Project Roadmap
 
-> **Status:** Approved — ready for Phase 0  
-> **Last updated:** 2026-05-21
+> **Status:** Phases 0–5 complete; Phase 6 partial; Phase 7 next  
+> **Last updated:** 2026-05-22  
+> **Live progress:** [status.md](./status.md) · [milestones.md](./milestones.md)
 
 Architecture and delivery plan for the [project brief](../project-brief.md). Task tracking lives in [milestones.md](./milestones.md).
 
@@ -11,7 +12,7 @@ Architecture and delivery plan for the [project brief](../project-brief.md). Tas
 
 We will build an **open-source Grafana datasource plugin** that makes Wazuh security data queryable inside Grafana without manual OpenSearch configuration. The plugin abstracts Wazuh's dual data paths — **Wazuh Indexer (OpenSearch)** for high-volume historical data and **Wazuh REST API** for live state — behind a single datasource configuration and a Wazuh-aware query editor.
 
-The repository is currently **greenfield** (brief + license only). The recommended stack aligns with Grafana's official plugin toolchain and the existing `.gitignore` Go conventions.
+The repository is a **working Grafana backend plugin** with all v1 data types, bundled dashboards, and a clean multi-environment deploy layout (`deploy/dev`, `deploy/wazuh-lab`, `deploy/kubernetes`).
 
 **Primary success metrics** (from the brief):
 

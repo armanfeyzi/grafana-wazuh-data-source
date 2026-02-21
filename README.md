@@ -22,6 +22,7 @@ Add the **Wazuh** datasource in the UI with your manager and indexer URLs. See [
 | [Kubernetes](docs/kubernetes.md) | Production / in-cluster Wazuh |
 | [Optional Wazuh lab](deploy/wazuh-lab/README.md) | Local wazuh-docker stack |
 | [Project brief](project-brief.md) | Goals and scope |
+| [Status](docs/status.md) | What's done and what's next |
 | [Roadmap](docs/project-roadmap.md) | Phases and milestones |
 
 ## Requirements

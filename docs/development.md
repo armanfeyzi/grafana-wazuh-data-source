@@ -24,9 +24,13 @@ docker compose -f deploy/dev/docker-compose.yaml up --build
 **1. Port-forward on all interfaces** (required when Grafana runs in Docker/Podman):
 
 ```bash
+make k8s-forward
+# or manually:
 kubectl port-forward --address 0.0.0.0 -n wazuh svc/wazuh 55000:55000
 kubectl port-forward --address 0.0.0.0 -n wazuh svc/wazuh-dev-indexer 9200:9200
 ```
+
+**Both** forwards must stay running. If you see `connection refused` on port 55000, the manager forward is usually missing while the indexer (9200) still works.
 
 **2. Configure the datasource** (`make dev` — plugin runs inside the container):
 
@@ -46,6 +50,27 @@ kubectl get secret indexer-cred -n wazuh -o jsonpath='{.data.INDEXER_USERNAME}' 
 ```
 
 If Grafana runs **on the host** (not in Docker), use `https://127.0.0.1:55000` and `:9200` instead.
+
+### First-time dev setup
+
+```bash
+make dev-config   # creates deploy/dev/provisioning/datasources/wazuh.yaml from example
+# edit passwords from kubectl secrets, then:
+make dev
+```
+
+Bundled dashboards appear under **Dashboards → Wazuh**. Datasource UID must be **`wazuh`**.
+
+### Dashboard template variables
+
+Bundled dashboards use a dynamic **Agent** variable (query type → Wazuh datasource). Panel filters reference `$agent` and `$severity`. The plugin implements:
+
+- `CustomVariableSupport` — populates agent dropdown from Manager API
+- `applyTemplateVariables` — resolves `$agent` / `$severity` before the backend query runs
+
+If panels show zero data with `$agent` set but work when the filter is cleared, rebuild the plugin and restart Grafana (`make dev`).
+
+See [status.md](status.md) for troubleshooting.
 
 ---
 

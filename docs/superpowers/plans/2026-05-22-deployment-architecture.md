@@ -1,6 +1,7 @@
 # Deployment Architecture Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **Status:** Complete (2026-05-22)  
+> **Live status:** [../../status.md](../../status.md)
 
 **Goal:** Separate plugin code from environment-specific deployment so local dev, optional Wazuh lab, and Kubernetes production are clean, documented paths.
 
@@ -12,7 +13,7 @@
 
 ---
 
-## Phase D1 — Restructure
+## Phase D1 — Restructure ✅
 
 ### Task 1: Create `deploy/dev/` Grafana-only compose
 
@@ -20,79 +21,76 @@
 - Create: `deploy/dev/docker-compose.yaml`
 - Create: `deploy/dev/.env.example`
 - Create: `deploy/dev/README.md`
-- Modify: `.config/docker-compose-base.yaml` (no change — reuse via extends)
 
-- [ ] Copy root compose to `deploy/dev/` without Wazuh network or extra_hosts
-- [ ] Mount only `./dist` and optional `deploy/dev/provisioning/` if user opts in
-- [ ] Remove root `docker-compose.yaml` or replace with pointer
+- [x] Grafana-only compose with plugin mount from `dist/`
+- [x] `extra_hosts: host.containers.internal:host-gateway` for K8s port-forward access
+- [x] Persistent Grafana volume
+- [x] Optional dev provisioning (datasource + dashboards)
+- [x] Removed root `docker-compose.yaml`
 
 ### Task 2: Move Wazuh lab to `deploy/wazuh-lab/`
 
-**Files:**
-- Move: `deploy/wazuh/*` → `deploy/wazuh-lab/*`
-- Create: `deploy/wazuh-lab/connect-grafana.sh`
-- Create: `deploy/wazuh-lab/examples/datasource.yaml.example`
-
-- [ ] Update internal paths in `setup.sh`
-- [ ] Keep Podman/SELinux docs in lab README only
+- [x] Lab under `deploy/wazuh-lab/`
+- [x] `connect-grafana.sh`, `setup.sh`
+- [x] `examples/datasource.yaml.example`
+- [x] Podman/SELinux docs in lab README
 
 ### Task 3: Move provisioning to examples
 
-**Files:**
-- Move: `provisioning/datasources/datasources.yml` → `provisioning/examples/datasources.yaml.example`
-- Move: `provisioning/dashboards/dashboards.yml` → `provisioning/examples/dashboards.yaml.example`
-- Remove: auto-mount from dev compose
+- [x] `provisioning/examples/` templates
+- [x] Dev-specific provisioning in `deploy/dev/provisioning/` (gitignored secrets)
 
 ### Task 4: Add `deploy/kubernetes/` skeleton
 
-**Files:**
-- Create: `deploy/kubernetes/README.md`
-- Create: `deploy/kubernetes/kustomization.yaml`
-- Create: `deploy/kubernetes/configmap-datasource.yaml`
-- Create: `deploy/kubernetes/secret-datasource.yaml.example`
+- [x] README, kustomization, ConfigMap, Secret example
 
 ### Task 5: Trim root README + add doc stubs
 
-**Files:**
-- Modify: `README.md`
-- Create: `docs/development.md`
-- Create: `docs/installation.md`
-- Create: `docs/kubernetes.md`
+- [x] `README.md`, `docs/development.md`, `docs/installation.md`, `docs/kubernetes.md`
 
 ---
 
-## Phase D2 — Dashboard & provisioning cleanup
+## Phase D2 — Dashboard & provisioning cleanup ✅
 
-### Task 6: Verify dashboards use UID `wazuh`, no `${datasource}` variable
+### Task 6: Verify dashboards use UID `wazuh`
 
-**Files:** `src/dashboards/*.json`
-
-- [ ] Confirm all panels reference `"uid": "wazuh"`
-- [ ] Remove datasource template variable if present
-- [ ] Rebuild dist
+- [x] All panels reference `"uid": "wazuh"`
+- [x] No `${datasource}` template variable
+- [x] Dynamic `$agent` query variable on dashboards
+- [x] `applyTemplateVariables` for panel filter interpolation
 
 ---
 
-## Phase D3 — Optional lab ergonomics
+## Phase D3 — Optional lab ergonomics ✅
 
 ### Task 7: Makefile targets
 
-**Files:** Create `Makefile`
-
-- [ ] `make dev` — build + start Grafana
-- [ ] `make lab-up` / `make lab-down` — Wazuh lab
-- [ ] `make lab-connect` — attach Grafana to lab network
+- [x] `make dev` — build + start Grafana
+- [x] `make dev-config` — create local datasource yaml
+- [x] `make k8s-forward` — start both port-forwards
+- [x] `make lab-up` / `make lab-down` / `make lab-connect`
 
 ---
 
-## Phase D4 — Verification
+## Phase D4 — Verification ✅
 
 ### Task 8: Verify CI still passes
 
-- [ ] `npm run typecheck && npm run test:ci && go test ./...`
+- [x] `npm run typecheck`, frontend tests, `go test ./...`, `npm run build`
 
 ---
 
-## Phase D5 — Update roadmap reference
+## Phase D5 — Documentation ✅
 
-- [ ] Add deployment hygiene note to `docs/project-roadmap.md` Phase 7
+- [x] Deployment hygiene in docs
+- [x] `docs/status.md` — living progress summary
+- [x] Updated milestones and roadmap status
+
+---
+
+## Follow-up (not part of this plan)
+
+See [status.md](../../status.md) Phase 6–7:
+- Mixed Prometheus + Wazuh dashboard
+- Namespace template variable
+- v0.1.0 release

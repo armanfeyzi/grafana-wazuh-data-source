@@ -74,3 +74,5 @@ Five dashboards ship with the plugin:
 Import via Grafana UI (Dashboards → New → Import from plugin) or file provisioning.
 
 **Note:** Vulnerabilities, FIM, and SCA panels need matching data in Wazuh (vuln index, syscheck alerts, SCA scans). Alerts and agent status work as soon as agents are connected.
+
+**Template variables:** Agent dropdown is populated dynamically from the Wazuh datasource. Datasource UID must be `wazuh`. See [status.md](status.md) if panels show zero data with `$agent` selected.

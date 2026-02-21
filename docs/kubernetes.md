@@ -89,6 +89,8 @@ Import from the plugin bundle or mount dashboard JSON via file provisioning (`pr
 Port-forward **must bind to all interfaces** when Grafana runs in Docker/Podman (`make dev`):
 
 ```bash
+make k8s-forward
+# or manually:
 kubectl port-forward --address 0.0.0.0 -n wazuh svc/wazuh 55000:55000
 kubectl port-forward --address 0.0.0.0 -n wazuh svc/wazuh-dev-indexer 9200:9200
 make dev
@@ -103,13 +105,18 @@ https://host.containers.internal:9200
 
 Use `127.0.0.1` only if Grafana runs directly on the host, not via `make dev`.
 
+Verify both ports are listening: `ss -tlnp | rg ':55000|:9200'`
+
 ## Troubleshooting
 
 | Symptom | Check |
 |---------|--------|
-| Save & Test fails (manager) | Service name, port, API credentials, network policy |
+| Save & Test fails (manager) | Service name, port, API credentials, network policy; **manager port-forward running on 55000** |
 | Save & Test fails (indexer) | Indexer URL, separate indexer credentials |
+| `connection refused` on `host.containers.internal:55000` | Manager port-forward stopped — run `make k8s-forward` |
 | Dashboards empty, Explore works | Datasource `uid` must be `wazuh` |
+| Panels empty with `$agent` filter | Rebuild plugin (`make dev`); needs `applyTemplateVariables` support |
 | No vulnerabilities / FIM / SCA | Wazuh data not indexed yet — not a Grafana wiring issue |
+| Agent dropdown empty | Manager API unreachable or RBAC denied |
 
 See [installation.md](installation.md) and Wazuh docs for module-specific data requirements.
