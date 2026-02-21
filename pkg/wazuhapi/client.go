@@ -77,7 +77,7 @@ func (c *Client) pingWithToken(ctx context.Context, token string) (int, []byte, 
 	if err != nil {
 		return 0, nil, classifyNetworkError(err, "Wazuh manager API")
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	body, _ := io.ReadAll(io.LimitReader(resp.Body, 512))
 	return resp.StatusCode, body, nil
@@ -114,7 +114,7 @@ func (c *Client) authenticate(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", classifyNetworkError(err, "Wazuh manager API")
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	body, err := io.ReadAll(io.LimitReader(resp.Body, 4096))
 	if err != nil {
@@ -175,7 +175,7 @@ func (c *Client) getWithToken(ctx context.Context, path, token string) ([]byte, 
 	if err != nil {
 		return nil, 0, classifyNetworkError(err, "Wazuh manager API")
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	body, err := io.ReadAll(io.LimitReader(resp.Body, 8<<20))
 	if err != nil {

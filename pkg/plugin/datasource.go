@@ -111,13 +111,13 @@ func (d *Datasource) CheckHealth(ctx context.Context, req *backend.CheckHealthRe
 func validateSettings(config *models.PluginSettings) error {
 	switch {
 	case config.Username == "":
-		return fmt.Errorf("Username is required")
+		return fmt.Errorf("username is required")
 	case config.Secrets == nil || config.Secrets.Password == "":
-		return fmt.Errorf("Password is required")
+		return fmt.Errorf("password is required")
 	case config.IndexerUser() == "":
-		return fmt.Errorf("Indexer username is required")
+		return fmt.Errorf("indexer username is required")
 	case config.IndexerPass() == "":
-		return fmt.Errorf("Indexer password is required")
+		return fmt.Errorf("indexer password is required")
 	default:
 		return nil
 	}

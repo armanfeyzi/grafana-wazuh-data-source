@@ -81,7 +81,7 @@ func TestCheckHealthMissingPassword(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CheckHealth() error = %v", err)
 	}
-	if result.Status != backend.HealthStatusError || !strings.Contains(result.Message, "Password is required") {
+	if result.Status != backend.HealthStatusError || !strings.Contains(result.Message, "password is required") {
 		t.Fatalf("unexpected result: %+v", result)
 	}
 }

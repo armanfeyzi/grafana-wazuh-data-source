@@ -19,8 +19,8 @@ func TestClientPing(t *testing.T) {
 	authCalls := 0
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		switch {
-		case r.URL.Path == "/security/user/authenticate":
+		switch r.URL.Path {
+		case "/security/user/authenticate":
 			authCalls++
 			if r.Method != http.MethodPost {
 				t.Fatalf("expected POST, got %s", r.Method)
@@ -31,7 +31,7 @@ func TestClientPing(t *testing.T) {
 				return
 			}
 			_, _ = w.Write([]byte(token))
-		case r.URL.Path == "/agents":
+		case "/agents":
 			if r.Header.Get("Authorization") != "Bearer "+token {
 				w.WriteHeader(http.StatusUnauthorized)
 				return
@@ -61,10 +61,10 @@ func TestClientPingRefreshesTokenOn401(t *testing.T) {
 	agentCalls := 0
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		switch {
-		case r.URL.Path == "/security/user/authenticate":
+		switch r.URL.Path {
+		case "/security/user/authenticate":
 			_, _ = w.Write([]byte(secondToken))
-		case r.URL.Path == "/agents":
+		case "/agents":
 			agentCalls++
 			auth := r.Header.Get("Authorization")
 			if agentCalls == 1 && auth == "Bearer "+firstToken {

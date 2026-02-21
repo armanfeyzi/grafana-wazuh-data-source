@@ -20,7 +20,7 @@ func TestExecuteQueryAlertsTimeSeries(t *testing.T) {
 
 	indexerServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/wazuh-alerts-*/_search" && r.URL.Path != "/wazuh-alerts-4.x-2026.05.21/_search" {
-			// accept any index pattern ending in _search
+			t.Logf("accepting generic path: %s", r.URL.Path)
 		}
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{
