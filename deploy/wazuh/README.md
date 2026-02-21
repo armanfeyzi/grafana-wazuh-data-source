@@ -34,12 +34,22 @@ curl -k -u 'admin:SecretPassword' 'https://127.0.0.1:9200/_cluster/health'
 
 ## Grafana datasource
 
-The plugin backend runs inside the Grafana container — use `host.containers.internal`, not `localhost`.
+The plugin backend runs inside the Grafana container — do not use `localhost`.
+
+**Local dev (recommended):** start this lab **before** `docker compose up` in the plugin repo. Grafana joins the `single-node_default` network and provisioning points at Wazuh service DNS names:
 
 | Field | Value |
 |-------|--------|
-| Manager URL | `https://host.containers.internal:55000` |
-| Indexer URL | `https://host.containers.internal:9200` |
+| Manager URL | `https://wazuh.manager:55000` |
+| Indexer URL | `https://wazuh.indexer:9200` |
+
+On **rootless Podman**, `host.containers.internal` often fails with `connection refused` (host-gateway does not forward to published ports). Use the hostnames above instead.
+
+If Grafana was already running, recreate it after the lab is up:
+
+```bash
+docker compose up -d --force-recreate
+```
 | API username | `wazuh-wui` |
 | API password | `MyS3cr37P450r.*-` |
 | Indexer username | `admin` |

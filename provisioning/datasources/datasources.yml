@@ -9,8 +9,8 @@ datasources:
     version: 1
     editable: true
     jsonData:
-      managerUrl: 'https://host.containers.internal:55000'
-      indexerUrl: 'https://host.containers.internal:9200'
+      managerUrl: 'https://wazuh.manager:55000'
+      indexerUrl: 'https://wazuh.indexer:9200'
       username: 'wazuh-wui'
       indexerUsername: 'admin'
       tlsSkipVerify: true

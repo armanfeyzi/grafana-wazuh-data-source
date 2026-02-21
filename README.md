@@ -21,7 +21,11 @@ Build `dist/` before starting Grafana. After code changes, keep `npm run dev` ru
 
 **Save & Test** checks connectivity to both the Wazuh manager API (JWT auth) and the indexer (`/_cluster/health`). Use real URLs and credentials from your Wazuh deployment; enable **Skip TLS verify** for self-signed certificates.
 
-When Grafana runs in Docker/Podman, the plugin backend also runs **inside the container**. Do not use `localhost` for Wazuh on your machine — use `host.containers.internal` (Linux Podman) or `host.docker.internal` instead. Example manager URL: `https://host.containers.internal:55000`.
+When Grafana runs in Docker/Podman, the plugin backend also runs **inside the container**. Do not use `localhost` for Wazuh on your machine.
+
+For the **local Wazuh lab**, start `./deploy/wazuh/setup.sh` first, then `docker compose up`. Grafana joins the Wazuh Docker network and provisioning uses `https://wazuh.manager:55000` and `https://wazuh.indexer:9200`.
+
+On **rootless Podman**, `host.containers.internal` often resolves to a host-gateway address that cannot reach published ports (`connection refused`). Prefer the Wazuh service hostnames on a shared network, or `host.docker.internal` on Docker Desktop.
 
 Before Phase 1, Save & Test only checked that required fields were set (always green). It now performs a real connection test, so you need Wazuh reachable at the configured URLs.
 

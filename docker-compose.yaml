@@ -14,3 +14,10 @@ services:
     extra_hosts:
       - host.containers.internal:host-gateway
       - host.docker.internal:host-gateway
+    networks:
+      - wazuh
+
+networks:
+  wazuh:
+    external: true
+    name: single-node_default

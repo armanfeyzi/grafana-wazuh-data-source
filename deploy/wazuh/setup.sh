@@ -157,9 +157,9 @@ Default credentials (wazuh-docker ${TAG} single-node):
   Manager API : wazuh-wui / MyS3cr37P450r.*-
   Indexer     : admin / SecretPassword
 
-Grafana datasource (plugin runs inside a container):
-  Manager URL       : https://host.containers.internal:55000
-  Indexer URL       : https://host.containers.internal:9200
+Grafana datasource (plugin runs inside a container; start Wazuh before docker compose up):
+  Manager URL       : https://wazuh.manager:55000
+  Indexer URL       : https://wazuh.indexer:9200
   API username      : wazuh-wui
   API password      : MyS3cr37P450r.*-
   Indexer username  : admin
