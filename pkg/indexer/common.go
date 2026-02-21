@@ -10,6 +10,9 @@ import (
 	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/models"
 )
 
+// MaxResponseBytes caps the OpenSearch response body read to protect memory.
+const MaxResponseBytes = 32 << 20 // 32 MB
+
 type queryParams struct {
 	From          time.Time
 	To            time.Time

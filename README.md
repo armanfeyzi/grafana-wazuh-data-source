@@ -20,10 +20,13 @@ Add the **Wazuh** datasource in the UI with your manager and indexer URLs. See [
 | [Installation](docs/installation.md) | Install plugin + configure datasource |
 | [Development](docs/development.md) | Local plugin hacking |
 | [Kubernetes](docs/kubernetes.md) | Production / in-cluster Wazuh |
+| [RBAC guide](docs/rbac.md) | Minimum required API + indexer permissions |
+| [Field mapping](docs/field-mapping.md) | Normalized field names ↔ Prometheus/Loki labels |
 | [Optional Wazuh lab](deploy/wazuh-lab/README.md) | Local wazuh-docker stack |
 | [Project brief](project-brief.md) | Goals and scope |
 | [Status](docs/status.md) | What's done and what's next |
 | [Roadmap](docs/project-roadmap.md) | Phases and milestones |
+| [Contributing](CONTRIBUTING.md) | Dev setup, architecture, adding a data type |
 
 ## Requirements
 

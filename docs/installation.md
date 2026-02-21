@@ -4,8 +4,8 @@
 
 - Grafana **10.4+**
 - Wazuh **4.7+** with Manager API and Indexer
-- API user with `agent:read`, `sca:read` (minimum)
-- Indexer user with read access to `wazuh-alerts-*`, `wazuh-states-vulnerabilities-*`
+- API user with `agent:read`, `sca:read` (minimum) — see [docs/rbac.md](rbac.md)
+- Indexer user with read access to `wazuh-alerts-*`, `wazuh-states-vulnerabilities-*` — see [docs/rbac.md](rbac.md)
 
 ## Install the plugin
 
@@ -70,9 +70,12 @@ Five dashboards ship with the plugin:
 | File Integrity (FIM) | `wazuh-fim` |
 | Security Configuration (SCA) | `wazuh-sca` |
 | Agent Status | `wazuh-agent-status` |
+| Correlation with Prometheus (Example) | `wazuh-mixed-prometheus-example` |
 
 Import via Grafana UI (Dashboards → New → Import from plugin) or file provisioning.
 
 **Note:** Vulnerabilities, FIM, and SCA panels need matching data in Wazuh (vuln index, syscheck alerts, SCA scans). Alerts and agent status work as soon as agents are connected.
 
-**Template variables:** Agent dropdown is populated dynamically from the Wazuh datasource. Datasource UID must be `wazuh`. See [status.md](status.md) if panels show zero data with `$agent` selected.
+**Template variables:** The `$agent` variable is populated dynamically from the Wazuh API. The `$namespace` variable lists distinct Kubernetes namespaces from Wazuh alert data — it will be empty on non-k8s deployments, which is expected. Datasource UID must be `wazuh`. See [status.md](status.md) if panels show zero data with `$agent` selected.
+
+**Correlation dashboard:** The _Correlation with Prometheus_ example requires a Prometheus datasource with UID `prometheus`. Rename your Prometheus datasource to `prometheus` in **Connections → Data sources**, or edit the panel datasource references after import.

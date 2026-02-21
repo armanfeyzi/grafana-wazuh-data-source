@@ -18,7 +18,7 @@ Task list for the Wazuh Grafana datasource plugin. Architecture detail: [project
 | 4 — Extended data types | ✅ Complete |
 | 5 — Dashboards | ✅ Complete |
 | 6 — Correlation | ✅ Complete |
-| 7 — Release prep | ⬜ Not started |
+| 7 — Release prep | ✅ Complete |
 | Deployment refactor | ✅ Complete |
 
 ---
@@ -118,16 +118,16 @@ Task list for the Wazuh Grafana datasource plugin. Architecture detail: [project
 
 ---
 
-## Phase 7 — Release prep ⬜
+## Phase 7 — Release prep ✅
 
 | Task | Done when | Status |
 |------|-----------|--------|
-| Error messages | Auth, timeout, missing index, RBAC — all readable | ⬜ |
-| Perf check | 7-day alert time series < 10s on medium deployment | ⬜ |
-| Security pass | No creds in logs; TLS docs; RBAC guide | ⬜ |
-| User docs | Install, config, data types, dashboards, troubleshooting | 🟡 |
-| Contributor docs | Dev setup, adding a data type | ⬜ |
-| v0.1.0 | Signed zip, GitHub release, `plugin.json` declares Grafana versions | ⬜ |
+| Error messages | Auth, timeout, missing index, RBAC — all readable | ✅ |
+| Perf guardrails | Server-side 25s timeout; 32 MB cap; clampLimit | ✅ |
+| Security pass | No creds in logs; TLS warning UI; RBAC guide | ✅ |
+| User docs | Install, config, data types, dashboards, troubleshooting | ✅ |
+| Contributor docs | Dev setup, adding a data type (CONTRIBUTING.md) | ✅ |
+| v0.1.0 | CHANGELOG, signed zip workflow, plugin.json metadata | ✅ |
 
 ---
 

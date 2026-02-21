@@ -2,16 +2,25 @@
   "$schema": "https://raw.githubusercontent.com/grafana/grafana/main/docs/sources/developers/plugins/plugin.schema.json",
   "type": "datasource",
   "name": "Wazuh",
-  "id": "wazuh-datasource",
+  "id": "armanfeyzi-wazuh-datasource",
   "metrics": true,
   "backend": true,
   "executable": "gpx_datasource",
   "info": {
-    "description": "",
+    "description": "Connect Grafana to Wazuh (SIEM/XDR) — query alerts, vulnerabilities, FIM events, SCA compliance scores, and agent status without manual OpenSearch configuration.",
     "author": {
       "name": "armanfeyzi"
     },
-    "keywords": ["datasource"],
+    "keywords": [
+      "datasource",
+      "wazuh",
+      "security",
+      "siem",
+      "xdr",
+      "opensearch",
+      "fim",
+      "sca"
+    ],
     "logos": {
       "small": "img/logo.svg",
       "large": "img/logo.svg"

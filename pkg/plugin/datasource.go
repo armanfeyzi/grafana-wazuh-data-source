@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
@@ -70,7 +71,7 @@ func (d *Datasource) query(ctx context.Context, query backend.DataQuery) backend
 
 	resp, err := d.executeQuery(ctx, query.RefID, qm, query)
 	if err != nil {
-		return backend.ErrDataResponse(backend.StatusInternal, err.Error())
+		return wazuhErrToDataResponse(err)
 	}
 
 	return resp
@@ -94,11 +95,11 @@ func (d *Datasource) CheckHealth(ctx context.Context, req *backend.CheckHealthRe
 	}
 
 	if err := d.wazuhAPI.Ping(ctx); err != nil {
-		return healthError(fmt.Sprintf("Wazuh manager API: %v", err)), nil
+		return healthError("Wazuh manager API: " + models.UserMessage(err)), nil
 	}
 
 	if err := d.indexer.Ping(ctx); err != nil {
-		return healthError(fmt.Sprintf("Wazuh indexer: %v", err)), nil
+		return healthError("Wazuh indexer: " + models.UserMessage(err)), nil
 	}
 
 	return &backend.CheckHealthResult{
@@ -126,5 +127,29 @@ func healthError(message string) *backend.CheckHealthResult {
 	return &backend.CheckHealthResult{
 		Status:  backend.HealthStatusError,
 		Message: message,
+	}
+}
+
+// wazuhErrToDataResponse converts a WazuhError (or plain error) into a Grafana
+// DataResponse with an appropriate HTTP status code and user-readable message.
+func wazuhErrToDataResponse(err error) backend.DataResponse {
+	we, ok := models.AsWazuhError(err)
+	if !ok {
+		return backend.ErrDataResponse(backend.StatusInternal, err.Error())
+	}
+
+	switch we.Code {
+	case models.ErrAuth:
+		return backend.ErrDataResponse(http.StatusUnauthorized, we.Message)
+	case models.ErrForbidden:
+		return backend.ErrDataResponse(http.StatusForbidden, we.Message)
+	case models.ErrIndexMissing:
+		return backend.ErrDataResponse(http.StatusNotFound, we.Message)
+	case models.ErrTimeout:
+		return backend.ErrDataResponse(http.StatusGatewayTimeout, we.Message)
+	case models.ErrUnreachable:
+		return backend.ErrDataResponse(http.StatusBadGateway, we.Message)
+	default:
+		return backend.ErrDataResponse(backend.StatusInternal, we.Message)
 	}
 }

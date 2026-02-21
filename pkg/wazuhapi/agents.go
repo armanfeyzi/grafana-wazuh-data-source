@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 	"net/url"
 	"strconv"
 
@@ -47,58 +45,6 @@ func (c *Client) ListAgents(ctx context.Context, limit int) ([]byte, error) {
 
 	path := fmt.Sprintf("/agents?limit=%s", url.QueryEscape(strconv.Itoa(limit)))
 	return c.get(ctx, path)
-}
-
-func (c *Client) get(ctx context.Context, path string) ([]byte, error) {
-	token, err := c.getToken(ctx, false)
-	if err != nil {
-		return nil, err
-	}
-
-	body, status, err := c.getWithToken(ctx, path, token)
-	if err != nil {
-		return nil, err
-	}
-	if status == http.StatusUnauthorized {
-		token, err = c.getToken(ctx, true)
-		if err != nil {
-			return nil, err
-		}
-		body, status, err = c.getWithToken(ctx, path, token)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if status == http.StatusUnauthorized {
-		return nil, fmt.Errorf("manager API authentication failed")
-	}
-	if status >= 400 {
-		return nil, fmt.Errorf("manager API returned %s: %s", http.StatusText(status), string(body))
-	}
-
-	return body, nil
-}
-
-func (c *Client) getWithToken(ctx context.Context, path, token string) ([]byte, int, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.baseURL+path, nil)
-	if err != nil {
-		return nil, 0, fmt.Errorf("build manager API request: %w", err)
-	}
-	req.Header.Set("Authorization", "Bearer "+token)
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, 0, fmt.Errorf("manager API unreachable: %w", err)
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(io.LimitReader(resp.Body, 8<<20))
-	if err != nil {
-		return nil, resp.StatusCode, fmt.Errorf("read manager API response: %w", err)
-	}
-
-	return body, resp.StatusCode, nil
 }
 
 func ParseAgentsFrame(raw []byte, refID string) (*data.Frame, error) {

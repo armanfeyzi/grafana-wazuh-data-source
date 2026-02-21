@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { Checkbox, InlineField, Input, SecretInput } from '@grafana/ui';
+import { Alert, Checkbox, InlineField, Input, SecretInput } from '@grafana/ui';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
 import { WazuhDataSourceOptions, WazuhSecureJsonData } from '../types';
 
@@ -156,6 +156,15 @@ export function ConfigEditor(props: Props) {
       <InlineField label="Skip TLS verify" labelWidth={16} interactive>
         <Checkbox id="config-editor-tls-skip" value={jsonData.tlsSkipVerify} onChange={onTlsSkipVerifyChange} />
       </InlineField>
+      {jsonData.tlsSkipVerify && (
+        <Alert
+          title="TLS verification is disabled"
+          severity="warning"
+        >
+          Certificate validation is bypassed. This is intended for development and self-signed lab environments only —
+          do not use this setting in production.
+        </Alert>
+      )}
     </>
   );
 }

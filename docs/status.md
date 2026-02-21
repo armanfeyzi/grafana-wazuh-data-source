@@ -1,6 +1,6 @@
 # Project status
 
-**Last updated:** 2026-05-22 (Phase 6 complete)
+**Last updated:** 2026-05-22 (v0.1.0 release-ready)
 
 Living summary of what is implemented, what was fixed recently, and what comes next. Task detail: [milestones.md](./milestones.md). Architecture: [project-roadmap.md](./project-roadmap.md).
 
@@ -17,7 +17,7 @@ Living summary of what is implemented, what was fixed recently, and what comes n
 | 4 | Vulnerabilities, FIM, SCA | **Done** |
 | 5 | Bundled dashboards | **Done** |
 | 6 | Correlation & variables | **Done** |
-| 7 | Release hardening | **Not started** |
+| 7 | Release hardening | **Done** |
 | — | Deployment architecture refactor | **Done** |
 
 ---
@@ -90,12 +90,12 @@ Spec: [superpowers/specs/2026-05-22-deployment-architecture-design.md](./superpo
 
 ## What's next
 
-### Phase 7 — release prep (current focus)
-1. **User-facing error messages** — auth, timeout, missing index, RBAC denied — all readable
-2. **Performance check** — 7-day alert time series < 10s on medium deployment
-3. **Security review** — no credentials in logs, TLS defaults, RBAC guide
-4. **`CONTRIBUTING.md`** — dev setup, architecture overview, how to add a data type
-5. **v0.1.0** — signed plugin ZIP, GitHub release with changelog, declared Grafana versions in `plugin.json`
+### Post v0.1.0 (optional / v1.1+)
+- Grafana plugin catalog submission (requires signed plugin + catalog PR)
+- Separate Manager API vs Indexer credentials (already structured; needs UI toggle)
+- `$severity` variable support (same pattern as `$namespace`)
+- Elasticsearch / OpenSearch backend support for non-Wazuh deployments
+- E2E Playwright test suite against a local Wazuh Docker lab
 
 ### Later (v1.1+)
 - Separate Manager API vs Indexer credentials

@@ -2,6 +2,7 @@ package wazuhapi
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -41,56 +42,45 @@ func (c *Client) Ping(ctx context.Context) error {
 		return err
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.baseURL+"/agents?limit=1", nil)
+	status, body, err := c.pingWithToken(ctx, token)
 	if err != nil {
-		return fmt.Errorf("build manager API request: %w", err)
+		return err
 	}
-	req.Header.Set("Authorization", "Bearer "+token)
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return fmt.Errorf("manager API unreachable: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode == http.StatusUnauthorized {
+	if status == http.StatusUnauthorized {
 		token, err = c.getToken(ctx, true)
 		if err != nil {
 			return err
 		}
-		return c.pingWithToken(ctx, token)
+		status, body, err = c.pingWithToken(ctx, token)
+		if err != nil {
+			return err
+		}
 	}
 
-	if resp.StatusCode >= 400 {
-		body, _ := io.ReadAll(io.LimitReader(resp.Body, 512))
-		return fmt.Errorf("manager API returned %s: %s", resp.Status, strings.TrimSpace(string(body)))
+	if status >= 400 {
+		return classifyHTTPError(status, body, "Wazuh manager API", c.password)
 	}
-
 	return nil
 }
 
-func (c *Client) pingWithToken(ctx context.Context, token string) error {
+// pingWithToken sends a lightweight GET /agents?limit=1 and returns the HTTP
+// status code and response body.
+func (c *Client) pingWithToken(ctx context.Context, token string) (int, []byte, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.baseURL+"/agents?limit=1", nil)
 	if err != nil {
-		return fmt.Errorf("build manager API request: %w", err)
+		return 0, nil, models.NewWazuhError(models.ErrBadResponse,
+			"failed to build manager API request", err)
 	}
 	req.Header.Set("Authorization", "Bearer "+token)
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return fmt.Errorf("manager API unreachable: %w", err)
+		return 0, nil, classifyNetworkError(err, "Wazuh manager API")
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode == http.StatusUnauthorized {
-		return fmt.Errorf("manager API authentication failed")
-	}
-	if resp.StatusCode >= 400 {
-		body, _ := io.ReadAll(io.LimitReader(resp.Body, 512))
-		return fmt.Errorf("manager API returned %s: %s", resp.Status, strings.TrimSpace(string(body)))
-	}
-
-	return nil
+	body, _ := io.ReadAll(io.LimitReader(resp.Body, 512))
+	return resp.StatusCode, body, nil
 }
 
 func (c *Client) getToken(ctx context.Context, forceRefresh bool) (string, error) {
@@ -115,34 +105,85 @@ func (c *Client) authenticate(ctx context.Context) (string, error) {
 	endpoint := c.baseURL + "/security/user/authenticate?raw=true"
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, nil)
 	if err != nil {
-		return "", fmt.Errorf("build authenticate request: %w", err)
+		return "", models.NewWazuhError(models.ErrBadResponse,
+			"failed to build authentication request", err)
 	}
 	req.SetBasicAuth(c.username, c.password)
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("manager API unreachable: %w", err)
+		return "", classifyNetworkError(err, "Wazuh manager API")
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(io.LimitReader(resp.Body, 4096))
 	if err != nil {
-		return "", fmt.Errorf("read authenticate response: %w", err)
+		return "", models.NewWazuhError(models.ErrBadResponse,
+			"failed to read authentication response", err)
 	}
 
-	if resp.StatusCode == http.StatusUnauthorized {
-		return "", fmt.Errorf("manager API authentication failed")
-	}
 	if resp.StatusCode >= 400 {
-		return "", fmt.Errorf("manager API returned %s: %s", resp.Status, strings.TrimSpace(string(body)))
+		return "", classifyHTTPError(resp.StatusCode, body, "Wazuh manager API", c.password)
 	}
 
 	token := strings.TrimSpace(string(body))
 	if token == "" {
-		return "", fmt.Errorf("manager API returned an empty token")
+		return "", models.NewWazuhError(models.ErrBadResponse,
+			"Wazuh manager API returned an empty token — check credentials", nil)
 	}
 
 	return token, nil
+}
+
+func (c *Client) get(ctx context.Context, path string) ([]byte, error) {
+	token, err := c.getToken(ctx, false)
+	if err != nil {
+		return nil, err
+	}
+
+	body, status, err := c.getWithToken(ctx, path, token)
+	if err != nil {
+		return nil, err
+	}
+	if status == http.StatusUnauthorized {
+		token, err = c.getToken(ctx, true)
+		if err != nil {
+			return nil, err
+		}
+		body, status, err = c.getWithToken(ctx, path, token)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if status >= 400 {
+		return nil, classifyHTTPError(status, body, "Wazuh manager API", c.password)
+	}
+
+	return body, nil
+}
+
+func (c *Client) getWithToken(ctx context.Context, path, token string) ([]byte, int, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.baseURL+path, nil)
+	if err != nil {
+		return nil, 0, models.NewWazuhError(models.ErrBadResponse,
+			"failed to build manager API request", err)
+	}
+	req.Header.Set("Authorization", "Bearer "+token)
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, 0, classifyNetworkError(err, "Wazuh manager API")
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(io.LimitReader(resp.Body, 8<<20))
+	if err != nil {
+		return nil, resp.StatusCode, models.NewWazuhError(models.ErrBadResponse,
+			"failed to read manager API response", err)
+	}
+
+	return body, resp.StatusCode, nil
 }
 
 // ValidateURL checks that the manager URL is usable before making requests.
@@ -161,4 +202,48 @@ func ValidateURL(raw string) error {
 		return fmt.Errorf("manager URL must include a host")
 	}
 	return nil
+}
+
+// classifyHTTPError maps an HTTP status code to a typed WazuhError with a
+// user-readable message. The password is used only to sanitize the body
+// excerpt so credentials never appear in error output.
+func classifyHTTPError(status int, body []byte, component, password string) *models.WazuhError {
+	excerpt := sanitizeExcerpt(body, password)
+	switch status {
+	case http.StatusUnauthorized:
+		return models.NewWazuhError(models.ErrAuth,
+			component+": authentication failed — check username and password", nil)
+	case http.StatusForbidden:
+		return models.NewWazuhError(models.ErrForbidden,
+			component+": permission denied — check RBAC roles (agent:read, sca:read)", nil)
+	case http.StatusNotFound:
+		return models.NewWazuhError(models.ErrIndexMissing,
+			component+": endpoint not found — check the manager URL", nil)
+	default:
+		return models.NewWazuhError(models.ErrBadResponse,
+			fmt.Sprintf("%s returned HTTP %d: %s", component, status, excerpt), nil)
+	}
+}
+
+// classifyNetworkError maps a transport-level error to ErrTimeout or
+// ErrUnreachable.
+func classifyNetworkError(err error, component string) *models.WazuhError {
+	if errors.Is(err, context.DeadlineExceeded) {
+		return models.NewWazuhError(models.ErrTimeout,
+			component+": request timed out — check connectivity or try again", err)
+	}
+	return models.NewWazuhError(models.ErrUnreachable,
+		component+": cannot connect — check the URL and that the service is running", err)
+}
+
+// sanitizeExcerpt limits body to 200 characters and redacts any password.
+func sanitizeExcerpt(body []byte, password string) string {
+	s := strings.TrimSpace(string(body))
+	if len(s) > 200 {
+		s = s[:200] + "…"
+	}
+	if password != "" {
+		s = strings.ReplaceAll(s, password, "[REDACTED]")
+	}
+	return s
 }

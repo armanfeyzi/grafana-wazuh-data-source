@@ -1,5 +1,81 @@
 # Changelog
 
-## 1.0.0 (Unreleased)
+All notable changes to this project will be documented in this file.
 
-Initial release.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+---
+
+## [0.1.0] — 2026-05-22
+
+First public release. All five Wazuh data types, five bundled dashboards, template variable support, and a mixed Prometheus correlation dashboard.
+
+### Added
+
+#### Plugin core
+- Backend Go plugin with dual-path routing: Wazuh Manager REST API (JWT) and Wazuh Indexer (OpenSearch)
+- Secure credential storage via Grafana `secureJsonData` — credentials never reach the browser
+- TLS skip-verify option for self-signed lab certificates (with UI warning in production)
+- `Save & Test` health check validates both manager API and indexer connectivity
+- Structured error classification: auth, forbidden, unreachable, timeout, index-missing — each returns a user-readable message with appropriate HTTP status code
+- Server-side OpenSearch query timeout (25s) to guard against long-running queries
+- Response body read cap (32 MB) to protect memory on large deployments
+- Credential sanitization — passwords are never included in panel error messages
+
+#### Data types
+- **Alerts** — time series (date histogram), table (latest N events), stat (total count)
+  - Filters: agent name, rule level min/max, rule groups
+- **Vulnerabilities** — table (packages + CVEs + severity), stat (count), time series (detections over time)
+  - Filters: agent name, severity (Critical / High / Medium / Low / None)
+- **File Integrity Monitoring (FIM)** — time series, table (file changes with agent/path/user/action), stat
+  - Filters: agent name
+- **Security Configuration Assessment (SCA)** — table (live compliance scores via Manager API), time series (historical scan activity), stat
+  - Filters: agent name
+- **Agent status** — table (agent name, status, IP, OS, version, last keepalive)
+
+#### Query editor
+- Data type dropdown with format options per type (time series / table / stat)
+- Dynamic agent filter: multi-select populated live from the Wazuh Manager API
+- Severity filter for vulnerability panels
+- Rule level range and rule groups filter for alert panels
+- Inline validation errors before query runs
+- Template variable interpolation (`$agent`, `$severity`) resolved server-side
+
+#### Template variables
+- **Agents** — dynamic query variable listing all registered agent names
+- **Namespaces** — dynamic query variable listing distinct Kubernetes namespaces from alert data (empty on non-k8s deployments)
+
+#### Bundled dashboards
+- **Security Overview** (`wazuh-security-overview`) — alerts today, alert trend, latest alerts table; `$agent` variable
+- **Vulnerabilities** (`wazuh-vulnerabilities`) — severity breakdown, packages per agent, recent CVEs; `$agent` + `$severity` variables
+- **File Integrity (FIM)** (`wazuh-fim`) — FIM events over time, recent changes table, top paths; `$agent` variable
+- **Security Configuration (SCA)** (`wazuh-sca`) — live compliance scores, score trend; `$agent` variable
+- **Agent Status** (`wazuh-agent-status`) — connection status counts, OS distribution
+- **Correlation with Prometheus (Example)** (`wazuh-mixed-prometheus-example`) — Prometheus node CPU + Wazuh alerts linked by `$agent`; `$namespace` variable
+
+#### Configuration
+- Manager URL + API username/password
+- Indexer URL + optional separate indexer credentials (falls back to API credentials)
+- Custom index prefix override
+- Skip TLS verify (dev only)
+
+#### Deployment
+- `make dev` — Grafana-only local development with Docker Compose
+- `make k8s-forward` — port-forwards both Wazuh API and Indexer from Kubernetes
+- `make lab-up` — local Wazuh Docker lab (optional)
+- `provisioning/examples/` — GitOps datasource and dashboard YAML templates
+- `deploy/kubernetes/` — Kubernetes Secret + ConfigMap examples
+
+#### Documentation
+- [Installation guide](docs/installation.md) — requirements, install, configure, provision
+- [Development guide](docs/development.md) — local dev loop, build commands
+- [Kubernetes guide](docs/kubernetes.md) — in-cluster deployment
+- [RBAC guide](docs/rbac.md) — minimum required API and indexer permissions
+- [Field mapping reference](docs/field-mapping.md) — all normalized field names; Prometheus/Loki correlation patterns
+- [CONTRIBUTING.md](CONTRIBUTING.md) — dev setup, architecture, how to add a new data type
+
+### Requirements
+
+- Grafana **10.4+**
+- Wazuh **4.7+** (Manager API + Indexer)
+- Go 1.22+ / Node.js 22+ (build only)
