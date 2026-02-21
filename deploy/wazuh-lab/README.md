@@ -18,10 +18,10 @@ On **Fedora/Podman (rootless)**, the setup script patches the compose file to:
 ## Start Wazuh
 
 ```bash
-./deploy/wazuh/setup.sh
+./deploy/wazuh-lab/setup.sh
 ```
 
-First run clones `wazuh-docker` v4.8.0 into `deploy/wazuh/lab/` (gitignored), generates TLS certs, and starts manager + indexer + dashboard.
+First run clones `wazuh-docker` v4.8.0 into `deploy/wazuh-lab/lab/` (gitignored), generates TLS certs, and starts manager + indexer + dashboard.
 
 Wait until both respond:
 
@@ -34,22 +34,30 @@ curl -k -u 'admin:SecretPassword' 'https://127.0.0.1:9200/_cluster/health'
 
 ## Grafana datasource
 
-The plugin backend runs inside the Grafana container — do not use `localhost`.
+The plugin backend runs inside the Grafana container — do not use `localhost` for Wazuh on your machine.
 
-**Local dev (recommended):** start this lab **before** `docker compose up` in the plugin repo. Grafana joins the `single-node_default` network and provisioning points at Wazuh service DNS names:
+**Optional lab workflow** (from the plugin repository root):
+
+```bash
+make lab-up       # this script
+make dev          # Grafana in another terminal
+make lab-connect  # attach Grafana to the lab Docker network
+```
+
+Then use `deploy/wazuh-lab/examples/datasource.yaml.example` or configure manually:
 
 | Field | Value |
 |-------|--------|
 | Manager URL | `https://wazuh.manager:55000` |
 | Indexer URL | `https://wazuh.indexer:9200` |
+| API username | `wazuh-wui` |
+| API password | `MyS3cr37P450r.*-` |
+| Indexer username | `admin` |
+| Indexer password | `SecretPassword` |
+| Skip TLS verify | on |
+| Datasource UID | `wazuh` (for bundled dashboards) |
 
-On **rootless Podman**, `host.containers.internal` often fails with `connection refused` (host-gateway does not forward to published ports). Use the hostnames above instead.
-
-If Grafana was already running, recreate it after the lab is up:
-
-```bash
-docker compose up -d --force-recreate
-```
+For **Kubernetes** or **port-forward** dev, skip the lab and see [docs/kubernetes.md](../../docs/kubernetes.md).
 | API username | `wazuh-wui` |
 | API password | `MyS3cr37P450r.*-` |
 | Indexer username | `admin` |
@@ -71,7 +79,7 @@ This happens when SELinux MCS categories on the bind-mounted file block the dash
 ### Quick fix
 
 ```bash
-./deploy/wazuh/fix-dashboard-perms.sh
+./deploy/wazuh-lab/fix-dashboard-perms.sh
 ```
 
 Then refresh **https://127.0.0.1:8443** and click **Check connection** — do not re-enter API settings; they are already in the file.
@@ -81,7 +89,7 @@ Then refresh **https://127.0.0.1:8443** and click **Check connection** — do no
 1. **Stack must be running** — `exec` and the dashboard both need live containers:
 
 ```bash
-cd deploy/wazuh/lab/wazuh-docker/single-node
+cd deploy/wazuh-lab/lab/wazuh-docker/single-node
 docker compose -f docker-compose.podman.yml up -d
 ```
 
@@ -96,7 +104,7 @@ WAZUH_YML=config/wazuh_dashboard/wazuh.yml
 The API connection is usually **already configured** in this file — fix access, then click **Test the configuration** in the UI.
 
 ```bash
-cd deploy/wazuh/lab/wazuh-docker/single-node
+cd deploy/wazuh-lab/lab/wazuh-docker/single-node
 WAZUH_YML=config/wazuh_dashboard/wazuh.yml
 
 chcon -t container_file_t -l s0 "${WAZUH_YML}"
@@ -141,7 +149,7 @@ docker compose -f docker-compose.podman.yml down
 docker compose -f docker-compose.podman.yml up -d
 ```
 
-Re-running `./deploy/wazuh/setup.sh` applies the permission fix automatically after startup on Podman.
+Re-running `./deploy/wazuh-lab/setup.sh` applies the permission fix automatically after startup on Podman.
 
 ## Wazuh dashboard: API shows **Offline**
 
@@ -169,13 +177,13 @@ If you see `Permission denied` on `/var/ossec/api/configuration` or `/var/ossec/
 This wipes Wazuh data in Docker volumes and starts clean:
 
 ```bash
-./deploy/wazuh/setup.sh reset
+./deploy/wazuh-lab/setup.sh reset
 ```
 
 Or manually:
 
 ```bash
-cd deploy/wazuh/lab/wazuh-docker/single-node
+cd deploy/wazuh-lab/lab/wazuh-docker/single-node
 docker compose -f docker-compose.podman.yml down -v
 docker compose -f docker-compose.podman.yml up -d
 chcon -t container_file_t -l s0 config/wazuh_dashboard/wazuh.yml
@@ -234,7 +242,7 @@ Or open **Wazuh dashboard** at `https://127.0.0.1:8443` → Security events.
 ## Stop
 
 ```bash
-cd deploy/wazuh/lab/wazuh-docker/single-node && docker compose down
+cd deploy/wazuh-lab/lab/wazuh-docker/single-node && docker compose down
 ```
 
 ## Resources

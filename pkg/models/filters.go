@@ -9,11 +9,13 @@ func SanitizeStringList(values []string) []string {
 
 	out := make([]string, 0, len(values))
 	for _, value := range values {
-		value = strings.TrimSpace(value)
-		if value == "" || value == "$__all" || value == "All" || value == ".*" {
-			continue
+		for _, part := range strings.Split(value, ",") {
+			part = strings.TrimSpace(part)
+			if part == "" || part == "$__all" || part == "All" || part == ".*" || strings.HasPrefix(part, "$") {
+				continue
+			}
+			out = append(out, part)
 		}
-		out = append(out, value)
 	}
 	if len(out) == 0 {
 		return nil

@@ -16,7 +16,7 @@ fi
 
 WAZUH_YML="${SINGLE_NODE}/config/wazuh_dashboard/wazuh.yml"
 if [[ ! -f "${WAZUH_YML}" ]]; then
-  echo "Missing ${WAZUH_YML} — run ./deploy/wazuh/setup.sh first."
+  echo "Missing ${WAZUH_YML} — run ./deploy/wazuh-lab/setup.sh first."
   exit 1
 fi
 

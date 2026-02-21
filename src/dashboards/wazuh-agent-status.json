@@ -1,43 +1,87 @@
 {
-  "annotations": { "list": [] },
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "links": [],
   "panels": [
     {
-      "datasource": { "type": "wazuh-datasource", "uid": "${datasource}" },
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
       "id": 1,
-      "options": { "reduceOptions": { "calcs": ["count"] } },
-      "targets": [{ "refId": "A", "dataType": "agents", "format": "table" }],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "count"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "dataType": "agents",
+          "format": "table"
+        }
+      ],
       "title": "Total agents",
       "type": "stat"
     },
     {
-      "datasource": { "type": "wazuh-datasource", "uid": "${datasource}" },
-      "gridPos": { "h": 14, "w": 24, "x": 0, "y": 4 },
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
       "id": 2,
-      "options": { "showHeader": true, "sortBy": [{ "desc": false, "displayName": "agent" }] },
-      "targets": [{ "refId": "A", "dataType": "agents", "format": "table", "limit": 500 }],
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "agent"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "dataType": "agents",
+          "format": "table",
+          "limit": 500
+        }
+      ],
       "title": "Agent inventory",
       "type": "table"
     }
   ],
   "refresh": "1m",
   "schemaVersion": 39,
-  "tags": ["wazuh", "agents"],
+  "tags": [
+    "wazuh",
+    "agents"
+  ],
   "templating": {
-    "list": [
-      {
-        "label": "Datasource",
-        "name": "datasource",
-        "query": "wazuh-datasource",
-        "type": "datasource"
-      }
-    ]
+    "list": []
   },
-  "time": { "from": "now-24h", "to": "now" },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
   "timezone": "browser",
-  "title": "Wazuh — Agent Status",
+  "title": "Wazuh \u2014 Agent Status",
   "uid": "wazuh-agent-status",
-  "version": 1
+  "version": 4
 }

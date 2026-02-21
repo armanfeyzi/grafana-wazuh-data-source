@@ -1,56 +1,106 @@
 {
-  "annotations": { "list": [] },
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "links": [],
   "panels": [
     {
-      "datasource": { "type": "wazuh-datasource", "uid": "${datasource}" },
-      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 0 },
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
       "id": 1,
-      "options": { "showHeader": true },
+      "options": {
+        "showHeader": true
+      },
       "targets": [
         {
           "refId": "A",
           "dataType": "sca",
           "format": "table",
           "limit": 100,
-          "filters": { "agentNames": ["$agent"] }
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
         }
       ],
       "title": "Current compliance scores (API)",
       "type": "table"
     },
     {
-      "datasource": { "type": "wazuh-datasource", "uid": "${datasource}" },
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 2 }
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 2
+          }
         }
       },
-      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 0 },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
       "id": 2,
       "targets": [
         {
           "refId": "A",
           "dataType": "sca",
           "format": "time_series",
-          "filters": { "agentNames": ["$agent"] }
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
         }
       ],
       "title": "Historical SCA scan activity",
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "wazuh-datasource", "uid": "${datasource}" },
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 10 },
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 10
+      },
       "id": 3,
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
       "targets": [
         {
           "refId": "A",
           "dataType": "sca",
           "format": "stat",
-          "filters": { "agentNames": ["$agent"] }
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
         }
       ],
       "title": "SCA scan events in range",
@@ -59,29 +109,43 @@
   ],
   "refresh": "1m",
   "schemaVersion": 39,
-  "tags": ["wazuh", "sca"],
+  "tags": [
+    "wazuh",
+    "sca"
+  ],
   "templating": {
     "list": [
       {
-        "label": "Datasource",
-        "name": "datasource",
-        "query": "wazuh-datasource",
-        "type": "datasource"
-      },
-      {
-        "current": { "selected": true, "text": "All", "value": "$__all" },
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "wazuh-datasource",
+          "uid": "wazuh"
+        },
+        "definition": "agents",
+        "hide": 0,
         "includeAll": true,
         "label": "Agent",
         "multi": true,
         "name": "agent",
-        "query": "fedora,wazuh.manager",
-        "type": "custom"
+        "options": [],
+        "query": "agents",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
       }
     ]
   },
-  "time": { "from": "now-7d", "to": "now" },
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
   "timezone": "browser",
-  "title": "Wazuh — Security Configuration (SCA)",
+  "title": "Wazuh \u2014 Security Configuration (SCA)",
   "uid": "wazuh-sca",
-  "version": 1
+  "version": 6
 }

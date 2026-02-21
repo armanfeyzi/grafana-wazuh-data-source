@@ -157,14 +157,10 @@ Default credentials (wazuh-docker ${TAG} single-node):
   Manager API : wazuh-wui / MyS3cr37P450r.*-
   Indexer     : admin / SecretPassword
 
-Grafana datasource (plugin runs inside a container; start Wazuh before docker compose up):
-  Manager URL       : https://wazuh.manager:55000
-  Indexer URL       : https://wazuh.indexer:9200
-  API username      : wazuh-wui
-  API password      : MyS3cr37P450r.*-
-  Indexer username  : admin
-  Indexer password  : SecretPassword
-  Skip TLS verify   : on
+Grafana + optional lab (from plugin repo root):
+  make lab-up && make dev && make lab-connect
+  Provision: deploy/wazuh-lab/examples/datasource.yaml.example
+  Or add datasource manually (Manager / Indexer URLs above)
 
 Verify API:
   curl -k -u 'wazuh-wui:MyS3cr37P450r.*-' -X POST \\

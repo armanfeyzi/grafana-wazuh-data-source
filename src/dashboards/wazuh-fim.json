@@ -1,56 +1,113 @@
 {
-  "annotations": { "list": [] },
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "links": [],
   "panels": [
     {
-      "datasource": { "type": "wazuh-datasource", "uid": "${datasource}" },
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
       "id": 1,
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
       "targets": [
         {
           "refId": "A",
           "dataType": "fim",
           "format": "stat",
-          "filters": { "agentNames": ["$agent"] }
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
         }
       ],
       "title": "FIM events in range",
       "type": "stat"
     },
     {
-      "datasource": { "type": "wazuh-datasource", "uid": "${datasource}" },
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": { "drawStyle": "line", "fillOpacity": 15, "lineWidth": 2, "showPoints": "never" }
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "lineWidth": 2,
+            "showPoints": "never"
+          }
         }
       },
-      "gridPos": { "h": 8, "w": 18, "x": 6, "y": 0 },
+      "gridPos": {
+        "h": 8,
+        "w": 18,
+        "x": 6,
+        "y": 0
+      },
       "id": 2,
       "targets": [
         {
           "refId": "A",
           "dataType": "fim",
           "format": "time_series",
-          "filters": { "agentNames": ["$agent"] }
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
         }
       ],
       "title": "FIM events over time",
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "wazuh-datasource", "uid": "${datasource}" },
-      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 8 },
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
       "id": 3,
-      "options": { "showHeader": true, "sortBy": [{ "desc": true, "displayName": "Time" }] },
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Time"
+          }
+        ]
+      },
       "targets": [
         {
           "refId": "A",
           "dataType": "fim",
           "format": "table",
           "limit": 100,
-          "filters": { "agentNames": ["$agent"] }
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
         }
       ],
       "title": "Recent file integrity changes",
@@ -59,29 +116,43 @@
   ],
   "refresh": "30s",
   "schemaVersion": 39,
-  "tags": ["wazuh", "fim"],
+  "tags": [
+    "wazuh",
+    "fim"
+  ],
   "templating": {
     "list": [
       {
-        "label": "Datasource",
-        "name": "datasource",
-        "query": "wazuh-datasource",
-        "type": "datasource"
-      },
-      {
-        "current": { "selected": true, "text": "All", "value": "$__all" },
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "wazuh-datasource",
+          "uid": "wazuh"
+        },
+        "definition": "agents",
+        "hide": 0,
         "includeAll": true,
         "label": "Agent",
         "multi": true,
         "name": "agent",
-        "query": "fedora,wazuh.manager",
-        "type": "custom"
+        "options": [],
+        "query": "agents",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
       }
     ]
   },
-  "time": { "from": "now-24h", "to": "now" },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
   "timezone": "browser",
-  "title": "Wazuh — File Integrity (FIM)",
+  "title": "Wazuh \u2014 File Integrity (FIM)",
   "uid": "wazuh-fim",
-  "version": 1
+  "version": 6
 }

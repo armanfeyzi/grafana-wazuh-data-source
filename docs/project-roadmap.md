@@ -187,12 +187,14 @@ grafana-wazuh-data-source-plugin/
 │       ├── opensearch/           # Indexer query builder + client
 │       ├── wazuhapi/             # REST API client
 │       └── normalize/            # Response → Grafana data frames
-├── dashboards/                   # Pre-built dashboard JSON
-├── provisioning/                 # Optional datasource provisioning example
+├── provisioning/examples/        # Datasource + dashboard templates (not auto-mounted)
+├── deploy/
+│   ├── dev/                      # Grafana-only local development
+│   ├── kubernetes/               # K8s ConfigMap / Secret examples
+│   └── wazuh-lab/                # Optional wazuh-docker lab
 ├── docs/
-├── .github/workflows/
-├── docker-compose.yaml           # Local Grafana + plugin mount
-└── plugin.json
+├── Makefile                      # dev, lab-up, lab-connect targets
+└── src/plugin.json
 ```
 
 ### 3.6 Configuration Surface

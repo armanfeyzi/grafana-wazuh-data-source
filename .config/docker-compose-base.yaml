@@ -12,11 +12,8 @@ services:
     cap_add:
       - SYS_PTRACE
     volumes:
-      # Paths are relative to the project root (where docker-compose.yaml lives).
-      # :Z relabels content for SELinux when using Podman on Fedora.
+      # Paths are relative to the compose file that includes this service.
       - ./dist:/var/lib/grafana/plugins/wazuh-datasource:Z
-      - ./provisioning:/etc/grafana/provisioning:Z
-      - ./dist/dashboards:/etc/grafana/provisioning/dashboards/wazuh:Z
       - .:/root/wazuh-datasource:Z
 
     environment:

@@ -1,0 +1,47 @@
+services:
+  grafana:
+    user: root
+    container_name: wazuh-datasource
+
+    build:
+      context: ../../.config
+      dockerfile: Dockerfile
+      args:
+        grafana_image: ${GRAFANA_IMAGE:-grafana-enterprise}
+        grafana_version: ${GRAFANA_VERSION:-12.4.0}
+        development: ${DEVELOPMENT:-false}
+        anonymous_auth_enabled: ${ANONYMOUS_AUTH_ENABLED:-true}
+
+    ports:
+      - 3000:3000/tcp
+      - 2345:2345/tcp
+
+    security_opt:
+      - apparmor:unconfined
+      - seccomp:unconfined
+
+    cap_add:
+      - SYS_PTRACE
+
+    extra_hosts:
+      # Reach kubectl port-forwards on the host (bind with --address 0.0.0.0).
+      - host.containers.internal:host-gateway
+      - host.docker.internal:host-gateway
+
+    volumes:
+      - grafana-dev-data:/var/lib/grafana
+      - ../../dist:/var/lib/grafana/plugins/wazuh-datasource:Z
+      - ../../dist/dashboards:/etc/grafana/provisioning/dashboards/wazuh:Z
+      - ./provisioning/dashboards.yml:/etc/grafana/provisioning/dashboards/wazuh.yaml:Z
+      - ./provisioning/datasources:/etc/grafana/provisioning/datasources:Z
+      - ../../:/root/wazuh-datasource:Z
+
+    environment:
+      NODE_ENV: development
+      GF_LOG_FILTERS: plugin.wazuh-datasource:debug
+      GF_LOG_LEVEL: debug
+      GF_DATAPROXY_LOGGING: 1
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: wazuh-datasource
+
+volumes:
+  grafana-dev-data:

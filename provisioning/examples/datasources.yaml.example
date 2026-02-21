@@ -1,0 +1,22 @@
+apiVersion: 1
+
+# Example datasource provisioning — copy and adapt for your environment.
+# Bundled dashboards expect uid: wazuh
+
+datasources:
+  - name: Wazuh
+    uid: wazuh
+    type: wazuh-datasource
+    access: proxy
+    isDefault: false
+    orgId: 1
+    editable: true
+    jsonData:
+      managerUrl: https://YOUR_WAZUH_MANAGER:55000
+      indexerUrl: https://YOUR_WAZUH_INDEXER:9200
+      username: YOUR_API_USER
+      indexerUsername: YOUR_INDEXER_USER
+      tlsSkipVerify: false
+    secureJsonData:
+      password: YOUR_API_PASSWORD
+      indexerPassword: YOUR_INDEXER_PASSWORD

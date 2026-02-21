@@ -46,3 +46,8 @@ export interface WazuhSecureJsonData {
   password?: string;
   indexerPassword?: string;
 }
+
+/** Query model for dashboard template variables (agent list). */
+export interface WazuhVariableQuery extends DataQuery {
+  query?: string;
+}

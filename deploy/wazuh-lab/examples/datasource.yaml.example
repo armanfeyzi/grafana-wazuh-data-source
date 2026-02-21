@@ -1,0 +1,22 @@
+apiVersion: 1
+
+# Use with the optional local Wazuh lab (deploy/wazuh-lab/).
+# Requires: lab running + `make lab-connect` so Grafana reaches wazuh.manager / wazuh.indexer.
+
+datasources:
+  - name: Wazuh
+    uid: wazuh
+    type: wazuh-datasource
+    access: proxy
+    isDefault: true
+    orgId: 1
+    editable: true
+    jsonData:
+      managerUrl: https://wazuh.manager:55000
+      indexerUrl: https://wazuh.indexer:9200
+      username: wazuh-wui
+      indexerUsername: admin
+      tlsSkipVerify: true
+    secureJsonData:
+      password: MyS3cr37P450r.*-
+      indexerPassword: SecretPassword

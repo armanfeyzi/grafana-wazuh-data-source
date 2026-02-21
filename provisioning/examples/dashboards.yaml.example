@@ -1,0 +1,14 @@
+apiVersion: 1
+
+# Example dashboard file provisioning — mount dashboard JSON and this file in Grafana.
+# Bundled dashboards are also available via the plugin UI (plugin.json includes).
+
+providers:
+  - name: Wazuh
+    orgId: 1
+    folder: Wazuh
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/wazuh

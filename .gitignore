@@ -59,5 +59,8 @@ go.work.sum
 # env
 .env
 
-# Local Wazuh lab clone (deploy/wazuh/setup.sh)
-deploy/wazuh/lab/
+# Local dev — datasource credentials (copy from wazuh.yaml.example)
+deploy/dev/provisioning/datasources/wazuh.yaml
+
+# Local Wazuh lab clone (deploy/wazuh-lab/setup.sh)
+deploy/wazuh-lab/lab/

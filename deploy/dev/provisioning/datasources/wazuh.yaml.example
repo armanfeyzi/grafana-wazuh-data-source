@@ -1,0 +1,27 @@
+apiVersion: 1
+
+# Copy to wazuh.yaml (make dev-config) and set credentials from your cluster:
+#   kubectl get secret wazuh-api-cred -n wazuh -o jsonpath='{.data.API_USERNAME}' | base64 -d
+#   kubectl get secret indexer-cred -n wazuh -o jsonpath='{.data.INDEXER_PASSWORD}' | base64 -d
+#
+# Requires kubectl port-forward on the host:
+#   kubectl port-forward --address 0.0.0.0 -n wazuh svc/wazuh 55000:55000
+#   kubectl port-forward --address 0.0.0.0 -n wazuh svc/wazuh-dev-indexer 9200:9200
+
+datasources:
+  - name: Wazuh
+    uid: wazuh
+    type: wazuh-datasource
+    access: proxy
+    isDefault: true
+    orgId: 1
+    editable: true
+    jsonData:
+      managerUrl: https://host.containers.internal:55000
+      indexerUrl: https://host.containers.internal:9200
+      username: wazuh-wui
+      indexerUsername: admin
+      tlsSkipVerify: true
+    secureJsonData:
+      password: CHANGE_ME_API_PASSWORD
+      indexerPassword: CHANGE_ME_INDEXER_PASSWORD

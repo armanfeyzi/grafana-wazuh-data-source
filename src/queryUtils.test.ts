@@ -1,4 +1,5 @@
 import {
+  applyTemplateVariablesToQuery,
   defaultFormatForDataType,
   formatsForDataType,
   isDataTypeImplemented,
@@ -40,5 +41,34 @@ describe('queryUtils', () => {
   it('includes all data types as implemented', () => {
     expect(isDataTypeImplemented('fim')).toBe(true);
     expect(formatsForDataType('vulnerabilities')).toContain('table');
+  });
+
+  it('expands dashboard template variables in agent filters', () => {
+    const query: WazuhQuery = {
+      refId: 'A',
+      dataType: 'vulnerabilities',
+      format: 'stat',
+      filters: {
+        agentNames: ['$agent'],
+        severity: ['$severity'],
+      },
+    };
+
+    const unresolved = applyTemplateVariablesToQuery(query, (target) => target);
+    expect(unresolved.filters?.agentNames).toBeUndefined();
+    expect(unresolved.filters?.severity).toBeUndefined();
+
+    const resolved = applyTemplateVariablesToQuery(query, (target) => {
+      if (target === '$agent') {
+        return 'fedora,wazuh.manager';
+      }
+      if (target === '$severity') {
+        return '$__all';
+      }
+      return target;
+    });
+
+    expect(resolved.filters?.agentNames).toEqual(['fedora', 'wazuh.manager']);
+    expect(resolved.filters?.severity).toBeUndefined();
   });
 });

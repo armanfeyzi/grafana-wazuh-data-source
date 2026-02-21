@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource-wazuh
+  namespace: monitoring
+  labels:
+    grafana_datasource: "1"
+data:
+  wazuh.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Wazuh
+        uid: wazuh
+        type: wazuh-datasource
+        access: proxy
+        isDefault: false
+        jsonData:
+          managerUrl: https://wazuh-manager.wazuh.svc.cluster.local:55000
+          indexerUrl: https://indexer.wazuh.svc.cluster.local:9200
+          username: wazuh-wui
+          indexerUsername: admin
+          tlsSkipVerify: false
+        secureJsonData:
+          password: ${WAZUH_API_PASSWORD}
+          indexerPassword: ${WAZUH_INDEXER_PASSWORD}

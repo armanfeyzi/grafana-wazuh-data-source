@@ -161,3 +161,55 @@ export const VULNERABILITY_SEVERITIES = ['Critical', 'High', 'Medium', 'Low', 'N
 export function formatHint(dataType: WazuhDataType, format: WazuhQueryFormat): string | undefined {
   return FORMAT_HINTS[dataType]?.[format];
 }
+
+type TemplateReplacer = (target: string) => string;
+
+function isIgnoredFilterValue(value: string): boolean {
+  return value === '' || value === '$__all' || value === 'All' || value === '.*' || value.startsWith('$');
+}
+
+function expandFilterValues(values: string[] | undefined, replace: TemplateReplacer): string[] | undefined {
+  if (!values?.length) {
+    return undefined;
+  }
+
+  const expanded = new Set<string>();
+  for (const value of values) {
+    const replaced = replace(value).trim();
+    if (!replaced) {
+      continue;
+    }
+
+    for (const part of replaced.split(',')) {
+      const item = part.trim();
+      if (isIgnoredFilterValue(item)) {
+        continue;
+      }
+      expanded.add(item);
+    }
+  }
+
+  if (expanded.size === 0) {
+    return undefined;
+  }
+
+  return [...expanded];
+}
+
+/** Expand dashboard template variables in query filters before the backend runs the query. */
+export function applyTemplateVariablesToQuery(query: WazuhQuery, replace: TemplateReplacer): WazuhQuery {
+  const filters = query.filters;
+  if (!filters) {
+    return query;
+  }
+
+  return {
+    ...query,
+    filters: {
+      ...filters,
+      agentNames: expandFilterValues(filters.agentNames, replace),
+      severity: expandFilterValues(filters.severity, replace),
+      ruleGroups: expandFilterValues(filters.ruleGroups, replace),
+    },
+  };
+}

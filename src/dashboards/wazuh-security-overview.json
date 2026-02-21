@@ -1,24 +1,45 @@
 {
-  "annotations": { "list": [] },
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "links": [],
   "panels": [
     {
-      "datasource": { "type": "wazuh-datasource", "uid": "${datasource}" },
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
       "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "unit": "none" },
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "none"
+        },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
       "id": 1,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
         "textMode": "auto"
       },
       "targets": [
@@ -26,72 +47,148 @@
           "refId": "A",
           "dataType": "alerts",
           "format": "stat",
-          "filters": { "agentNames": ["$agent"] }
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
         }
       ],
       "title": "Alerts in range",
       "type": "stat"
     },
     {
-      "datasource": { "type": "wazuh-datasource", "uid": "${datasource}" },
-      "fieldConfig": {
-        "defaults": { "color": { "mode": "palette-classic" }, "unit": "none" },
-        "overrides": []
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
       },
-      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
-      "id": 2,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "reduceOptions": { "calcs": ["count"], "fields": "", "values": false }
-      },
-      "targets": [{ "refId": "A", "dataType": "agents", "format": "table" }],
-      "title": "Registered agents",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "wazuh-datasource", "uid": "${datasource}" },
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "lineWidth": 2,
-            "showPoints": "never",
-            "stacking": { "mode": "none" }
+          "color": {
+            "mode": "palette-classic"
           },
           "unit": "none"
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 4 },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "count"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "dataType": "agents",
+          "format": "table"
+        }
+      ],
+      "title": "Registered agents",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "lineWidth": 2,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none"
+            }
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
       "id": 3,
-      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
       "targets": [
         {
           "refId": "A",
           "dataType": "alerts",
           "format": "time_series",
-          "filters": { "agentNames": ["$agent"] }
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
         }
       ],
       "title": "Alerts over time",
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "wazuh-datasource", "uid": "${datasource}" },
-      "fieldConfig": { "defaults": {}, "overrides": [] },
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 12 },
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 12
+      },
       "id": 4,
-      "options": { "showHeader": true, "sortBy": [{ "desc": true, "displayName": "Time" }] },
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Time"
+          }
+        ]
+      },
       "targets": [
         {
           "refId": "A",
           "dataType": "alerts",
           "format": "table",
           "limit": 50,
-          "filters": { "agentNames": ["$agent"] }
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
         }
       ],
       "title": "Latest alerts",
@@ -100,32 +197,43 @@
   ],
   "refresh": "30s",
   "schemaVersion": 39,
-  "tags": ["wazuh", "security"],
+  "tags": [
+    "wazuh",
+    "security"
+  ],
   "templating": {
     "list": [
       {
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "wazuh-datasource",
+          "uid": "wazuh"
+        },
+        "definition": "agents",
         "hide": 0,
-        "label": "Datasource",
-        "name": "datasource",
-        "query": "wazuh-datasource",
-        "refresh": 1,
-        "type": "datasource"
-      },
-      {
-        "current": { "selected": true, "text": "All", "value": "$__all" },
         "includeAll": true,
         "label": "Agent",
         "multi": true,
         "name": "agent",
         "options": [],
-        "query": "fedora,wazuh.manager",
-        "type": "custom"
+        "query": "agents",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
       }
     ]
   },
-  "time": { "from": "now-24h", "to": "now" },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
   "timezone": "browser",
-  "title": "Wazuh — Security Overview",
+  "title": "Wazuh \u2014 Security Overview",
   "uid": "wazuh-security-overview",
-  "version": 1
+  "version": 6
 }
