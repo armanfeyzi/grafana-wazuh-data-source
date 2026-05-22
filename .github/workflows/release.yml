@@ -19,15 +19,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup Go environment
-        uses: actions/setup-go@v6
-        with:
-          go-version-file: go.mod
-
       - name: Build and package plugin
         id: build
         uses: grafana/plugin-actions/build-plugin@build-plugin/v1.0.2
         with:
+          go-version: '1.22'
           # Plugin signing — set GRAFANA_ACCESS_POLICY_TOKEN in repository
           # secrets to enable signing. Obtain a token at:
           # https://grafana.com/developers/plugin-tools/publish-a-plugin/sign-a-plugin
