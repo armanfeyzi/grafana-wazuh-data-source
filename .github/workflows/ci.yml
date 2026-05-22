@@ -239,6 +239,7 @@ jobs:
           # required for playwright-gh-pages
           persist-credentials: true
       - name: Publish report
+        continue-on-error: true
         uses: grafana/plugin-actions/playwright-gh-pages/deploy-report-pages@deploy-report-pages/v1.1.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

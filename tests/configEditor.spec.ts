@@ -18,8 +18,8 @@ test('"Save & test" reports connectivity errors when Wazuh is unreachable', asyn
   const configPage = await createDataSourceConfigPage({ type: ds.type });
   await page.getByRole('textbox', { name: 'Manager URL' }).fill(ds.jsonData.managerUrl ?? '');
   await page.getByRole('textbox', { name: 'Indexer URL' }).fill(ds.jsonData.indexerUrl ?? '');
-  await page.getByRole('textbox', { name: 'Username' }).fill(ds.jsonData.username ?? '');
-  await page.getByRole('textbox', { name: 'Password' }).fill(ds.secureJsonData?.password ?? '');
+  await page.getByRole('textbox', { name: 'API username' }).fill(ds.jsonData.username ?? '');
+  await page.getByRole('textbox', { name: 'API password' }).fill(ds.secureJsonData?.password ?? '');
   await expect(configPage.saveAndTest()).not.toBeOK();
   await expect(configPage).toHaveAlert('error', { hasText: /manager API|indexer/i });
 });
@@ -35,7 +35,7 @@ test('"Save & test" should fail when configuration is invalid', async ({
   const configPage = await createDataSourceConfigPage({ type: ds.type });
   await page.getByRole('textbox', { name: 'Manager URL' }).fill(ds.jsonData.managerUrl ?? '');
   await page.getByRole('textbox', { name: 'Indexer URL' }).fill(ds.jsonData.indexerUrl ?? '');
-  await page.getByRole('textbox', { name: 'Username' }).fill(ds.jsonData.username ?? '');
+  await page.getByRole('textbox', { name: 'API username' }).fill(ds.jsonData.username ?? '');
   await expect(configPage.saveAndTest()).not.toBeOK();
   await expect(configPage).toHaveAlert('error', { hasText: 'password is required' });
 });
