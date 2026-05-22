@@ -27,7 +27,7 @@ func (c *Client) Search(ctx context.Context, indices string, body []byte) ([]byt
 	if err != nil {
 		return nil, classifyNetworkError(err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	raw, err := io.ReadAll(io.LimitReader(resp.Body, MaxResponseBytes))
 	if err != nil {

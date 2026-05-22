@@ -38,7 +38,7 @@ func (c *Client) Ping(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("indexer unreachable: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode == http.StatusUnauthorized {
 		return fmt.Errorf("indexer authentication failed")
