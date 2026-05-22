@@ -37,5 +37,5 @@ test('"Save & test" should fail when configuration is invalid', async ({
   await page.getByRole('textbox', { name: 'Indexer URL' }).fill(ds.jsonData.indexerUrl ?? '');
   await page.getByRole('textbox', { name: 'Username' }).fill(ds.jsonData.username ?? '');
   await expect(configPage.saveAndTest()).not.toBeOK();
-  await expect(configPage).toHaveAlert('error', { hasText: 'Password is required' });
+  await expect(configPage).toHaveAlert('error', { hasText: 'password is required' });
 });

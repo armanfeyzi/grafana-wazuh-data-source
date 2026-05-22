@@ -1,0 +1,17 @@
+apiVersion: 1
+
+datasources:
+  - name: Wazuh
+    uid: wazuh
+    type: armanfeyzi-wazuh-datasource
+    access: proxy
+    isDefault: false
+    orgId: 1
+    editable: true
+    jsonData:
+      managerUrl: https://localhost:55000
+      indexerUrl: https://localhost:9200
+      username: admin
+      tlsSkipVerify: true
+    secureJsonData:
+      password: admin
