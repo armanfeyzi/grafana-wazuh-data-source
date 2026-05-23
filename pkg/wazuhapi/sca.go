@@ -50,9 +50,6 @@ func (c *Client) ListSCAForAgents(ctx context.Context, agentNames []string, agen
 
 	rows := make([]map[string]any, 0)
 	for _, agent := range agentsResp.Data.AffectedItems {
-		if agent.ID == "000" {
-			continue
-		}
 		if len(nameFilter) > 0 {
 			if _, ok := nameFilter[agent.Name]; !ok {
 				continue

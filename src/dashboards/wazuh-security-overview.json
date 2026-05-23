@@ -85,7 +85,7 @@
           "calcs": [
             "count"
           ],
-          "fields": "",
+          "fields": "/^agent_id$/",
           "values": false
         }
       },
@@ -215,7 +215,7 @@
                 ],
                 "operation": "aggregate"
               },
-              "level": {
+              "severity_level": {
                 "aggregations": [],
                 "operation": "groupby"
               }
@@ -284,7 +284,7 @@
                 ],
                 "operation": "aggregate"
               },
-              "description": {
+              "rule_description": {
                 "aggregations": [],
                 "operation": "groupby"
               }
@@ -442,5 +442,5 @@
   "timezone": "browser",
   "title": "Wazuh — Security Overview",
   "uid": "wazuh-security-overview",
-  "version": 7
+  "version": 8
 }
