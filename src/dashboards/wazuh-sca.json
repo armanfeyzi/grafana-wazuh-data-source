@@ -11,21 +11,24 @@
         "uid": "wazuh"
       },
       "gridPos": {
-        "h": 10,
-        "w": 12,
+        "h": 8,
+        "w": 4,
         "x": 0,
         "y": 0
       },
-      "id": 1,
+      "id": 3,
       "options": {
-        "showHeader": true
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
       },
       "targets": [
         {
           "refId": "A",
           "dataType": "sca",
-          "format": "table",
-          "limit": 100,
+          "format": "stat",
           "filters": {
             "agentNames": [
               "$agent"
@@ -33,8 +36,146 @@
           }
         }
       ],
-      "title": "Current compliance scores (API)",
-      "type": "table"
+      "title": "SCA scan events in range",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 4,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "dataType": "sca",
+          "format": "table",
+          "limit": 2000,
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
+        }
+      ],
+      "title": "Failed Checks By Policy",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "fail": {
+                "aggregations": [
+                  "sum"
+                ],
+                "operation": "aggregate"
+              },
+              "policy": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "fail (sum)",
+                "desc": true
+              }
+            ]
+          }
+        }
+      ],
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 10,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "dataType": "sca",
+          "format": "table",
+          "limit": 2000,
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
+        }
+      ],
+      "title": "Failed Checks By Agent",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "fail": {
+                "aggregations": [
+                  "sum"
+                ],
+                "operation": "aggregate"
+              },
+              "agent": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "fail (sum)",
+                "desc": true
+              }
+            ]
+          }
+        }
+      ],
+      "type": "piechart"
     },
     {
       "datasource": {
@@ -51,9 +192,9 @@
         }
       },
       "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
+        "h": 8,
+        "w": 8,
+        "x": 16,
         "y": 0
       },
       "id": 2,
@@ -78,24 +219,21 @@
         "uid": "wazuh"
       },
       "gridPos": {
-        "h": 4,
-        "w": 6,
+        "h": 12,
+        "w": 24,
         "x": 0,
-        "y": 10
+        "y": 8
       },
-      "id": 3,
+      "id": 1,
       "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        }
+        "showHeader": true
       },
       "targets": [
         {
           "refId": "A",
           "dataType": "sca",
-          "format": "stat",
+          "format": "table",
+          "limit": 100,
           "filters": {
             "agentNames": [
               "$agent"
@@ -103,8 +241,8 @@
           }
         }
       ],
-      "title": "SCA scan events in range",
-      "type": "stat"
+      "title": "Current compliance scores (API)",
+      "type": "table"
     }
   ],
   "refresh": "1m",
@@ -145,7 +283,7 @@
     "to": "now"
   },
   "timezone": "browser",
-  "title": "Wazuh \u2014 Security Configuration (SCA)",
+  "title": "Wazuh — Security Configuration (SCA)",
   "uid": "wazuh-sca",
-  "version": 6
+  "version": 7
 }

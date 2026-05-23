@@ -11,8 +11,8 @@
         "uid": "wazuh"
       },
       "gridPos": {
-        "h": 4,
-        "w": 6,
+        "h": 8,
+        "w": 3,
         "x": 0,
         "y": 0
       },
@@ -44,6 +44,213 @@
         "type": "wazuh-datasource",
         "uid": "wazuh"
       },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 3,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "dataType": "fim",
+          "format": "table",
+          "limit": 2000,
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
+        }
+      ],
+      "title": "By Event",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "path": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              },
+              "event": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "path (count)",
+                "desc": true
+              }
+            ]
+          }
+        }
+      ],
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 7,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "dataType": "fim",
+          "format": "table",
+          "limit": 2000,
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
+        }
+      ],
+      "title": "By Agent",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "path": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              },
+              "agent": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "path (count)",
+                "desc": true
+              }
+            ]
+          }
+        }
+      ],
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 11,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "dataType": "fim",
+          "format": "table",
+          "limit": 2000,
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
+        }
+      ],
+      "title": "By User",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "path": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              },
+              "user": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "path (count)",
+                "desc": true
+              }
+            ]
+          }
+        }
+      ],
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -56,8 +263,8 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 18,
-        "x": 6,
+        "w": 9,
+        "x": 15,
         "y": 0
       },
       "id": 2,
@@ -152,7 +359,7 @@
     "to": "now"
   },
   "timezone": "browser",
-  "title": "Wazuh \u2014 File Integrity (FIM)",
+  "title": "Wazuh — File Integrity (FIM)",
   "uid": "wazuh-fim",
-  "version": 6
+  "version": 7
 }

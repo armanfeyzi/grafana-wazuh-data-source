@@ -22,8 +22,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 6,
+        "h": 8,
+        "w": 3,
         "x": 0,
         "y": 0
       },
@@ -72,9 +72,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 6,
+        "h": 8,
+        "w": 3,
+        "x": 3,
         "y": 0
       },
       "id": 2,
@@ -104,6 +104,213 @@
         "type": "wazuh-datasource",
         "uid": "wazuh"
       },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "dataType": "alerts",
+          "format": "table",
+          "limit": 2000,
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
+        }
+      ],
+      "title": "Alerts By Agent",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "rule_id": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              },
+              "agent": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "rule_id (count)",
+                "desc": true
+              }
+            ]
+          }
+        }
+      ],
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "dataType": "alerts",
+          "format": "table",
+          "limit": 2000,
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
+        }
+      ],
+      "title": "Alerts By Level",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "rule_id": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              },
+              "level": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "rule_id (count)",
+                "desc": true
+              }
+            ]
+          }
+        }
+      ],
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "id": 7,
+      "options": {
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "dataType": "alerts",
+          "format": "table",
+          "limit": 2000,
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          }
+        }
+      ],
+      "title": "Alerts By Rule",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "rule_id": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              },
+              "description": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "rule_id (count)",
+                "desc": true
+              }
+            ]
+          }
+        }
+      ],
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -126,7 +333,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 4
+        "y": 8
       },
       "id": 3,
       "options": {
@@ -166,7 +373,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 16
       },
       "id": 4,
       "options": {
@@ -233,7 +440,7 @@
     "to": "now"
   },
   "timezone": "browser",
-  "title": "Wazuh \u2014 Security Overview",
+  "title": "Wazuh — Security Overview",
   "uid": "wazuh-security-overview",
-  "version": 6
+  "version": 7
 }
