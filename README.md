@@ -1,4 +1,4 @@
-# Wazuh datasource for Grafana
+# Wazuh Datasource for Grafana
 
 Open-source Grafana plugin that connects to Wazuh (manager API + indexer) so security data appears alongside your existing dashboards — without manual OpenSearch configuration.
 
