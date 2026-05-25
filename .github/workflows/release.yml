@@ -21,7 +21,7 @@ jobs:
 
       - name: Build and package plugin
         id: build
-        uses: grafana/plugin-actions/build-plugin@build-plugin/v1.0.2
+        uses: grafana/plugin-actions/build-plugin@build-plugin/v1.2.0
         with:
           go-version: '1.26'
           # policy_token: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
