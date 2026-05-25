@@ -5,34 +5,45 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"sort"
+	"strings"
 
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/models"
 )
-
-type scaResponse struct {
-	Data struct {
-		AffectedItems []scaPolicyItem `json:"affected_items"`
-	} `json:"data"`
-}
-
-type scaPolicyItem struct {
-	PolicyID    string  `json:"policy_id"`
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Pass        int64   `json:"pass"`
-	Fail        int64   `json:"fail"`
-	Score       float64 `json:"score"`
-	TotalChecks int64   `json:"total_checks"`
-	EndScan     string  `json:"end_scan"`
-}
 
 func (c *Client) GetSCA(ctx context.Context, agentID string) ([]byte, error) {
 	path := fmt.Sprintf("/sca/%s", url.PathEscape(agentID))
 	return c.get(ctx, path)
 }
 
+// ListSCAForAgents fetches SCA compliance scores for the given agent names.
+// Concurrent callers with the same parameters share a single in-flight request
+// (singleflight), and the result is cached for scaCacheTTL to prevent the
+// N+1 API call pattern from exhausting the Wazuh rate limit when multiple
+// dashboard panels refresh simultaneously.
 func (c *Client) ListSCAForAgents(ctx context.Context, agentNames []string, agentLimit int) ([]byte, error) {
+	key := scaCacheKey(agentNames, agentLimit)
+
+	// Return cached result if still fresh.
+	if cached, ok := c.scaCache.Get(key); ok {
+		return cached.([]byte), nil
+	}
+
+	// Deduplicate concurrent requests for the same key.
+	raw, err, _ := c.scaGroup.Do(key, func() (any, error) {
+		return c.fetchSCAForAgents(ctx, agentNames, agentLimit)
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	result := raw.([]byte)
+	c.scaCache.SetDefault(key, result)
+	return result, nil
+}
+
+func (c *Client) fetchSCAForAgents(ctx context.Context, agentNames []string, agentLimit int) ([]byte, error) {
 	agentsRaw, err := c.ListAgents(ctx, agentLimit)
 	if err != nil {
 		return nil, err
@@ -68,21 +79,45 @@ func (c *Client) ListSCAForAgents(ctx context.Context, agentNames []string, agen
 
 		for _, policy := range sca.Data.AffectedItems {
 			rows = append(rows, map[string]any{
-				"agent_id":      agent.ID,
-				"agent":         agent.Name,
-				"policy_id":     policy.PolicyID,
-				"policy":        policy.Name,
-				"description":   policy.Description,
-				"score":         policy.Score,
-				"pass":          policy.Pass,
-				"fail":          policy.Fail,
-				"total_checks":  policy.TotalChecks,
-				"end_scan":      policy.EndScan,
+				"agent_id":     agent.ID,
+				"agent":        agent.Name,
+				"policy_id":    policy.PolicyID,
+				"policy":       policy.Name,
+				"description":  policy.Description,
+				"score":        policy.Score,
+				"pass":         policy.Pass,
+				"fail":         policy.Fail,
+				"total_checks": policy.TotalChecks,
+				"end_scan":     policy.EndScan,
 			})
 		}
 	}
 
 	return json.Marshal(rows)
+}
+
+// scaCacheKey builds a stable cache key from the agent name filter and limit.
+func scaCacheKey(agentNames []string, limit int) string {
+	sanitized := models.SanitizeStringList(agentNames)
+	sort.Strings(sanitized)
+	return fmt.Sprintf("sca:%s:%d", strings.Join(sanitized, ","), limit)
+}
+
+type scaResponse struct {
+	Data struct {
+		AffectedItems []scaPolicyItem `json:"affected_items"`
+	} `json:"data"`
+}
+
+type scaPolicyItem struct {
+	PolicyID    string  `json:"policy_id"`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Pass        int64   `json:"pass"`
+	Fail        int64   `json:"fail"`
+	Score       float64 `json:"score"`
+	TotalChecks int64   `json:"total_checks"`
+	EndScan     string  `json:"end_scan"`
 }
 
 func ParseSCALiveTableFrame(raw []byte, refID string) (*data.Frame, error) {

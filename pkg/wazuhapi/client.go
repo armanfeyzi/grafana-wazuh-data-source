@@ -11,10 +11,16 @@ import (
 	"sync"
 	"time"
 
+	gocache "github.com/patrickmn/go-cache"
+	"golang.org/x/sync/singleflight"
+
 	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/models"
 )
 
-const tokenTTL = 14 * time.Minute
+const (
+	tokenTTL    = 14 * time.Minute
+	scaCacheTTL = 45 * time.Second
+)
 
 type Client struct {
 	baseURL    string
@@ -25,6 +31,14 @@ type Client struct {
 	mu          sync.Mutex
 	cachedToken string
 	tokenExpiry time.Time
+
+	// scaGroup deduplicates concurrent identical ListSCAForAgents calls so that
+	// multiple dashboard panels loading at the same time share a single set of
+	// Wazuh API requests instead of each making their own N+1 round-trips.
+	scaGroup singleflight.Group
+	// scaCache stores the marshalled SCA result for scaCacheTTL so that the
+	// 1-minute dashboard auto-refresh does not burst the Wazuh rate limit.
+	scaCache *gocache.Cache
 }
 
 func NewClient(settings *models.PluginSettings, httpClient *http.Client) *Client {
@@ -33,6 +47,7 @@ func NewClient(settings *models.PluginSettings, httpClient *http.Client) *Client
 		username:   settings.Username,
 		password:   settings.Secrets.Password,
 		httpClient: httpClient,
+		scaCache:   gocache.New(scaCacheTTL, 2*scaCacheTTL),
 	}
 }
 

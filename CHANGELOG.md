@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.2] — 2026-05-25
+
+### Fixed
+
+- **SCA dashboard HTTP 429 rate-limit errors** — The SCA dashboard was making one Wazuh Manager API call per agent for every panel that renders (N+1 pattern). With multiple panels loading simultaneously and a 1-minute auto-refresh, this burst would exceed the Wazuh default request rate limit. Fixed by adding two layers of protection to `ListSCAForAgents`:
+  - **Singleflight deduplication**: concurrent calls with identical parameters (e.g. three SCA panels loading at the same time) now share a single in-flight set of API requests instead of each making independent N+1 calls.
+  - **45-second TTL cache**: the result is cached so the 1-minute dashboard auto-refresh re-uses the previous response rather than triggering a fresh burst.
+
+---
+
 ## [0.1.0] — 2026-05-22
 
 First public release. All five Wazuh data types, five bundled dashboards, template variable support, and a mixed Prometheus correlation dashboard.
