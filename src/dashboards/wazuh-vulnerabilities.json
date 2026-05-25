@@ -625,7 +625,7 @@
         "label": "Severity",
         "multi": true,
         "name": "severity",
-        "query": "Critical,High,Medium,Low,None",
+        "query": "Critical,High,Medium,Low,None,-",
         "type": "custom",
         "valuesFormat": "csv"
       }

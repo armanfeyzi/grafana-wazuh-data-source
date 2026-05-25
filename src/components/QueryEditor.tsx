@@ -169,7 +169,7 @@ export function QueryEditor({ query, onChange, onRunQuery, datasource }: Props) 
   });
 
   const severityOptions = VULNERABILITY_SEVERITIES.map((severity) => ({
-    label: severity,
+    label: severity === '-' ? 'Unscored (-)' : severity,
     value: severity,
   }));
 

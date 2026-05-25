@@ -156,7 +156,8 @@ export function showSeverityFilter(dataType: WazuhDataType): boolean {
   return dataType === 'vulnerabilities';
 }
 
-export const VULNERABILITY_SEVERITIES = ['Critical', 'High', 'Medium', 'Low', 'None'];
+// '-' is Wazuh's literal value for CVEs that have no CVSS score yet (newly published or unscored CVEs).
+export const VULNERABILITY_SEVERITIES = ['Critical', 'High', 'Medium', 'Low', 'None', '-'];
 
 export function formatHint(dataType: WazuhDataType, format: WazuhQueryFormat): string | undefined {
   return FORMAT_HINTS[dataType]?.[format];

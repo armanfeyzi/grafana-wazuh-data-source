@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.3] — 2026-05-25
+
+### Fixed
+
+- **Vulnerability count mismatch vs Wazuh interface** — CVEs that Wazuh has not yet assigned a CVSS score to are stored in the indexer with `vulnerability.severity = "-"`. Because `"-"` was absent from the `$severity` variable's option list (`Critical,High,Medium,Low,None`), selecting "All" expanded to those five values and applied a `terms` filter that silently excluded all unscored CVEs (5,676 documents in the dev cluster). Added `"-"` to the dashboard variable and to `VULNERABILITY_SEVERITIES` so unscored CVEs are included by default. The query editor now shows these as "Unscored (-)" rather than a bare dash.
+
+---
+
 ## [0.2.2] — 2026-05-25
 
 ### Fixed
