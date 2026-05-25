@@ -1,8 +1,23 @@
 {
   "annotations": {
-    "list": []
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
   },
   "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
   "links": [],
   "panels": [
     {
@@ -12,29 +27,52 @@
       },
       "fieldConfig": {
         "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
           "unit": "none"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 3,
+        "h": 7,
+        "w": 6,
         "x": 0,
         "y": 0
       },
       "id": 1,
       "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
-        }
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
+      "pluginVersion": "12.4.1",
       "targets": [
         {
-          "refId": "A",
           "dataType": "vulnerabilities",
-          "format": "stat",
           "filters": {
             "agentNames": [
               "$agent"
@@ -42,7 +80,9 @@
             "severity": [
               "$severity"
             ]
-          }
+          },
+          "format": "stat",
+          "refId": "A"
         }
       ],
       "title": "Open vulnerabilities",
@@ -53,29 +93,86 @@
         "type": "wazuh-datasource",
         "uid": "wazuh"
       },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "bars",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
       "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 3,
+        "h": 7,
+        "w": 18,
+        "x": 6,
         "y": 0
       },
-      "id": 4,
+      "id": 2,
       "options": {
-        "pieType": "donut",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": true
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
+      "pluginVersion": "12.4.1",
       "targets": [
         {
-          "refId": "A",
           "dataType": "vulnerabilities",
-          "format": "table",
-          "limit": 2000,
           "filters": {
             "agentNames": [
               "$agent"
@@ -83,7 +180,78 @@
             "severity": [
               "$severity"
             ]
-          }
+          },
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "title": "Detections over time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 0,
+        "y": 7
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.1",
+      "targets": [
+        {
+          "dataType": "vulnerabilities",
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ],
+            "severity": [
+              "$severity"
+            ]
+          },
+          "format": "table",
+          "limit": 2000,
+          "refId": "A"
         }
       ],
       "title": "By Severity",
@@ -111,8 +279,8 @@
             "fields": {},
             "sort": [
               {
-                "field": "cve (count)",
-                "desc": true
+                "desc": true,
+                "field": "cve (count)"
               }
             ]
           }
@@ -125,14 +293,38 @@
         "type": "wazuh-datasource",
         "uid": "wazuh"
       },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
       "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 7,
-        "y": 0
+        "h": 11,
+        "w": 9,
+        "x": 6,
+        "y": 7
       },
       "id": 5,
       "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
+        },
         "pieType": "donut",
         "reduceOptions": {
           "calcs": [
@@ -140,14 +332,18 @@
           ],
           "fields": "",
           "values": true
+        },
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
+      "pluginVersion": "12.4.1",
       "targets": [
         {
-          "refId": "A",
           "dataType": "vulnerabilities",
-          "format": "table",
-          "limit": 2000,
           "filters": {
             "agentNames": [
               "$agent"
@@ -155,7 +351,10 @@
             "severity": [
               "$severity"
             ]
-          }
+          },
+          "format": "table",
+          "limit": 2000,
+          "refId": "A"
         }
       ],
       "title": "By Agent",
@@ -164,15 +363,15 @@
           "id": "groupBy",
           "options": {
             "fields": {
+              "agent": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
               "cve": {
                 "aggregations": [
                   "count"
                 ],
                 "operation": "aggregate"
-              },
-              "agent": {
-                "aggregations": [],
-                "operation": "groupby"
               }
             }
           }
@@ -183,8 +382,8 @@
             "fields": {},
             "sort": [
               {
-                "field": "cve (count)",
-                "desc": true
+                "desc": true,
+                "field": "cve (count)"
               }
             ]
           }
@@ -197,14 +396,63 @@
         "type": "wazuh-datasource",
         "uid": "wazuh"
       },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "cve (count)"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": true,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 11,
-        "y": 0
+        "h": 11,
+        "w": 9,
+        "x": 15,
+        "y": 7
       },
       "id": 6,
       "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
+        },
         "pieType": "donut",
         "reduceOptions": {
           "calcs": [
@@ -212,14 +460,18 @@
           ],
           "fields": "",
           "values": true
+        },
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "asc"
         }
       },
+      "pluginVersion": "12.4.1",
       "targets": [
         {
-          "refId": "A",
           "dataType": "vulnerabilities",
-          "format": "table",
-          "limit": 2000,
           "filters": {
             "agentNames": [
               "$agent"
@@ -227,7 +479,10 @@
             "severity": [
               "$severity"
             ]
-          }
+          },
+          "format": "table",
+          "limit": 2000,
+          "refId": "A"
         }
       ],
       "title": "By Package",
@@ -255,8 +510,8 @@
             "fields": {},
             "sort": [
               {
-                "field": "cve (count)",
-                "desc": true
+                "desc": true,
+                "field": "cve (count)"
               }
             ]
           }
@@ -272,62 +527,47 @@
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "drawStyle": "bars",
-            "fillOpacity": 80,
-            "lineWidth": 1,
-            "stacking": {
-              "mode": "normal"
-            }
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
           }
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 9,
-        "x": 15,
-        "y": 0
-      },
-      "id": 2,
-      "targets": [
-        {
-          "refId": "A",
-          "dataType": "vulnerabilities",
-          "format": "time_series",
-          "filters": {
-            "agentNames": [
-              "$agent"
-            ],
-            "severity": [
-              "$severity"
-            ]
-          }
-        }
-      ],
-      "title": "Detections over time",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "wazuh-datasource",
-        "uid": "wazuh"
-      },
-      "gridPos": {
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 18
       },
       "id": 3,
       "options": {
+        "cellHeight": "sm",
         "showHeader": true
       },
+      "pluginVersion": "12.4.1",
       "targets": [
         {
-          "refId": "A",
           "dataType": "vulnerabilities",
-          "format": "table",
-          "limit": 100,
           "filters": {
             "agentNames": [
               "$agent"
@@ -335,15 +575,19 @@
             "severity": [
               "$severity"
             ]
-          }
+          },
+          "format": "table",
+          "limit": 100,
+          "refId": "A"
         }
       ],
       "title": "Affected packages and CVEs",
       "type": "table"
     }
   ],
+  "preload": false,
   "refresh": "1m",
-  "schemaVersion": 39,
+  "schemaVersion": 42,
   "tags": [
     "wazuh",
     "vulnerabilities"
@@ -352,7 +596,6 @@
     "list": [
       {
         "current": {
-          "selected": true,
           "text": "All",
           "value": "$__all"
         },
@@ -361,7 +604,6 @@
           "uid": "wazuh"
         },
         "definition": "agents",
-        "hide": 0,
         "includeAll": true,
         "label": "Agent",
         "multi": true,
@@ -370,12 +612,12 @@
         "query": "agents",
         "refresh": 1,
         "regex": "",
+        "regexApplyTo": "value",
         "sort": 1,
         "type": "query"
       },
       {
         "current": {
-          "selected": true,
           "text": "All",
           "value": "$__all"
         },
@@ -384,7 +626,8 @@
         "multi": true,
         "name": "severity",
         "query": "Critical,High,Medium,Low,None",
-        "type": "custom"
+        "type": "custom",
+        "valuesFormat": "csv"
       }
     ]
   },
@@ -392,8 +635,10 @@
     "from": "now-7d",
     "to": "now"
   },
+  "timepicker": {},
   "timezone": "browser",
   "title": "Wazuh - Vulnerabilities",
   "uid": "wazuh-vulnerabilities",
-  "version": 7
+  "version": 1,
+  "weekStart": ""
 }
