@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.4] — 2026-05-26
+
+### Changed
+
+- **Security Overview dashboard redesigned to match Wazuh Overview layout** — Added four dedicated severity stat panels at the top of the dashboard (Critical / High / Medium / Low), each coloured with its standard severity colour and filtered by the corresponding Wazuh rule level range (Critical ≥15, High 12–14, Medium 7–11, Low 0–6). Removed the redundant "Alerts By Level" pie chart and tightened the secondary row to show total alerts, registered agents, alerts by agent, and alerts by rule.
+
+---
+
 ## [0.2.3] — 2026-05-25
 
 ### Fixed
