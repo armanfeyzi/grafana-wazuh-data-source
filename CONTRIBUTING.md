@@ -13,8 +13,8 @@ Thank you for contributing! This guide covers everything you need to build, test
 - A running Wazuh deployment (cluster or local lab — see below)
 
 ```bash
-git clone https://github.com/armanfeyzi/grafana-wazuh-data-source-plugin
-cd grafana-wazuh-data-source-plugin
+git clone https://github.com/armanfeyzi/grafana-wazuh-data-source
+cd grafana-wazuh-data-source
 npm ci
 ```
 

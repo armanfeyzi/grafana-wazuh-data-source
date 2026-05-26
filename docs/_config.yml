@@ -1,0 +1,10 @@
+title: Wazuh Grafana Datasource
+description: Open-source Grafana plugin for Wazuh — alerts, vulnerabilities, FIM, SCA, and agent status.
+theme: jekyll-theme-cayman
+markdown: GFM
+
+# Publish docs/*.md at /installation.html etc. (default Jekyll permalinks)
+permalink: pretty
+
+exclude:
+  - superpowers/

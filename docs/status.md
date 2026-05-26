@@ -20,7 +20,7 @@ Living summary of what is implemented, what was fixed recently, and what comes n
 | 7 | Release hardening | **Done** |
 | — | Deployment architecture refactor | **Done** |
 
-**Latest release:** [v0.2.5](https://github.com/armanfeyzi/grafana-wazuh-data-source-plugin/releases/tag/v0.2.5)
+**Latest release:** [v0.2.5](https://github.com/armanfeyzi/grafana-wazuh-data-source/releases/tag/v0.2.5)
 
 ---
 
