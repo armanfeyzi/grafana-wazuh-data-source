@@ -7,7 +7,7 @@
   "panels": [
     {
       "datasource": {
-        "type": "wazuh-datasource",
+        "type": "armanfeyzi-wazuh-datasource",
         "uid": "wazuh"
       },
       "gridPos": {
@@ -36,7 +36,7 @@
     },
     {
       "datasource": {
-        "type": "wazuh-datasource",
+        "type": "armanfeyzi-wazuh-datasource",
         "uid": "wazuh"
       },
       "gridPos": {

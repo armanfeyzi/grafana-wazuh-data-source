@@ -96,7 +96,7 @@
     },
     {
       "datasource": {
-        "type": "wazuh-datasource",
+        "type": "armanfeyzi-wazuh-datasource",
         "uid": "wazuh"
       },
       "description": "Wazuh security alert rate for the same agent selected above. High spikes here while CPU is also spiking can indicate a compromise or noisy process.",
@@ -134,7 +134,7 @@
     },
     {
       "datasource": {
-        "type": "wazuh-datasource",
+        "type": "armanfeyzi-wazuh-datasource",
         "uid": "wazuh"
       },
       "description": "Recent Wazuh alerts for the selected agent — correlate with the CPU/memory panels above.",
@@ -196,7 +196,7 @@
     },
     {
       "datasource": {
-        "type": "wazuh-datasource",
+        "type": "armanfeyzi-wazuh-datasource",
         "uid": "wazuh"
       },
       "description": "Wazuh alerts filtered to the selected Kubernetes namespace. Requires Wazuh k8s integration (kubernetes.namespace field in alerts).",
@@ -245,7 +245,7 @@
           "value": "$__all"
         },
         "datasource": {
-          "type": "wazuh-datasource",
+          "type": "armanfeyzi-wazuh-datasource",
           "uid": "wazuh"
         },
         "definition": "agents",
@@ -268,7 +268,7 @@
           "value": "$__all"
         },
         "datasource": {
-          "type": "wazuh-datasource",
+          "type": "armanfeyzi-wazuh-datasource",
           "uid": "wazuh"
         },
         "definition": "namespaces",

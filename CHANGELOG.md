@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.5] — 2026-05-26
+
+### Fixed
+
+- **Bundled dashboards referenced wrong datasource type** — All bundled dashboard panels used `wazuh-datasource` while the plugin ID is `armanfeyzi-wazuh-datasource`. Panels now resolve the datasource correctly on import without manual re-selection.
+
+### Changed
+
+- **Security Overview dashboard annotations and layout** — Added alert annotations for improved visibility; refined severity stat panel grid positions, thresholds, and titles for consistency with the Wazuh UI.
+
+---
+
 ## [0.2.4] — 2026-05-26
 
 ### Changed

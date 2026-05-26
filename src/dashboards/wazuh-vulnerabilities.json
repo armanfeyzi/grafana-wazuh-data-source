@@ -22,7 +22,7 @@
   "panels": [
     {
       "datasource": {
-        "type": "wazuh-datasource",
+        "type": "armanfeyzi-wazuh-datasource",
         "uid": "wazuh"
       },
       "fieldConfig": {
@@ -90,7 +90,7 @@
     },
     {
       "datasource": {
-        "type": "wazuh-datasource",
+        "type": "armanfeyzi-wazuh-datasource",
         "uid": "wazuh"
       },
       "fieldConfig": {
@@ -190,7 +190,7 @@
     },
     {
       "datasource": {
-        "type": "wazuh-datasource",
+        "type": "armanfeyzi-wazuh-datasource",
         "uid": "wazuh"
       },
       "fieldConfig": {
@@ -290,7 +290,7 @@
     },
     {
       "datasource": {
-        "type": "wazuh-datasource",
+        "type": "armanfeyzi-wazuh-datasource",
         "uid": "wazuh"
       },
       "fieldConfig": {
@@ -393,7 +393,7 @@
     },
     {
       "datasource": {
-        "type": "wazuh-datasource",
+        "type": "armanfeyzi-wazuh-datasource",
         "uid": "wazuh"
       },
       "fieldConfig": {
@@ -521,7 +521,7 @@
     },
     {
       "datasource": {
-        "type": "wazuh-datasource",
+        "type": "armanfeyzi-wazuh-datasource",
         "uid": "wazuh"
       },
       "fieldConfig": {
@@ -600,7 +600,7 @@
           "value": "$__all"
         },
         "datasource": {
-          "type": "wazuh-datasource",
+          "type": "armanfeyzi-wazuh-datasource",
           "uid": "wazuh"
         },
         "definition": "agents",
