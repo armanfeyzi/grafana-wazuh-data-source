@@ -1,6 +1,6 @@
 # Project status
 
-**Last updated:** 2026-05-22 (v0.1.0 release-ready)
+**Last updated:** 2026-05-26 (v0.2.5)
 
 Living summary of what is implemented, what was fixed recently, and what comes next. Task detail: [milestones.md](./milestones.md). Architecture: [project-roadmap.md](./project-roadmap.md).
 
@@ -20,12 +20,15 @@ Living summary of what is implemented, what was fixed recently, and what comes n
 | 7 | Release hardening | **Done** |
 | — | Deployment architecture refactor | **Done** |
 
+**Latest release:** [v0.2.5](https://github.com/armanfeyzi/grafana-wazuh-data-source-plugin/releases/tag/v0.2.5)
+
 ---
 
 ## What works today
 
 ### Plugin
 - Backend Go plugin: Manager API (JWT) + Indexer (OpenSearch) dual path
+- Plugin ID: **`armanfeyzi-wazuh-datasource`**
 - Data types: **alerts**, **vulnerabilities**, **FIM**, **SCA**, **agent status**
 - Formats: time series, table, stat (per data type)
 - Explore query editor with dynamic agent dropdown (from Manager API)
@@ -39,12 +42,14 @@ Living summary of what is implemented, what was fixed recently, and what comes n
 | File Integrity (FIM) | `wazuh-fim` |
 | Security Configuration (SCA) | `wazuh-sca` |
 | Agent Status | `wazuh-agent-status` |
+| Correlation with Prometheus (Example) | `wazuh-mixed-prometheus-example` |
 
-All panels use datasource UID **`wazuh`**. Provision from `dist/dashboards/` or import from plugin.
+All panels use datasource type **`armanfeyzi-wazuh-datasource`** and UID **`wazuh`**. Provision from `dist/dashboards/` or import from plugin.
 
 ### Template variables
 - **Agent** — dynamic query variable from Wazuh datasource (lists all registered agents)
-- **Severity** — custom list on Vulnerabilities dashboard
+- **Namespace** — dynamic query variable from alert data (empty on non-k8s deployments)
+- **Severity** — custom list on Vulnerabilities dashboard (includes unscored `-` CVEs)
 - Panel filters (`$agent`, `$severity`) resolved via `applyTemplateVariables` before backend query
 
 ### Local development
@@ -58,19 +63,17 @@ Grafana container reaches cluster Wazuh via `https://host.containers.internal:55
 
 ---
 
-## Recent fixes/additions (2026-05-22)
+## Recent fixes/additions (v0.2.2 – v0.2.5)
 
-| Change | Details |
-|--------|---------|
-| Namespace template variable | New `/namespaces` resource endpoint queries `kubernetes.namespace` agg from `wazuh-alerts-*`; returns empty list on non-k8s deployments |
-| `VariableQueryEditor` picker | Replaced invisible placeholder with Select: **Agents** / **Namespaces** |
-| Mixed correlation dashboard | New bundled dashboard `wazuh-mixed-prometheus-example` — Prometheus node CPU + Wazuh alerts sharing `$agent` variable |
-| Field mapping doc | `docs/field-mapping.md` — all normalized plugin fields, Prometheus label correlation patterns |
-| Dashboard agent dropdown hardcoded | Dashboard used custom variable; no plugin variable support | `CustomVariableSupport` + query-type `$agent` variable |
-| Panels empty with `$agent` filter | Literal `$agent` sent to backend | `applyTemplateVariables` on datasource; backend ignores unresolved `$…` |
-| Datasource lost on restart | No persistent volume / provisioning | Grafana data volume + file provisioning in `deploy/dev/` |
-| `connection refused` on manager API | Manager port-forward not running (indexer still up) | `make k8s-forward`; docs updated |
-| Explore works, dashboards empty | Wrong datasource UID or missing `uid: wazuh` | All bundled dashboards pinned to `wazuh` |
+| Version | Change | Details |
+|---------|--------|---------|
+| v0.2.5 | Dashboard datasource type | Bundled panels now reference `armanfeyzi-wazuh-datasource` (was `wazuh-datasource`) so imports resolve without manual re-selection |
+| v0.2.5 | Security Overview layout | Alert annotations; refined severity stat panels and grid layout |
+| v0.2.4 | Security Overview redesign | Per-severity stat row (Critical / High / Medium / Low) matching Wazuh UI |
+| v0.2.3 | Vulnerability count mismatch | Unscored CVEs (`severity = "-"`) included when "All" severities selected |
+| v0.2.2 | SCA rate limiting | Singleflight dedup + 45 s cache on `ListSCAForAgents` to prevent HTTP 429 |
+| v0.2.1 | SCA + Overview fixes | Agent 000 included in SCA tables; pie chart field mapping corrected |
+| v0.1.0 | Initial release | All five data types, six bundled dashboards, template variables, mixed Prometheus example |
 
 ---
 
@@ -90,15 +93,15 @@ Spec: [superpowers/specs/2026-05-22-deployment-architecture-design.md](./superpo
 
 ## What's next
 
-### Post v0.1.0 (optional / v1.1+)
-- Grafana plugin catalog submission (requires signed plugin + catalog PR)
-- Separate Manager API vs Indexer credentials (already structured; needs UI toggle)
-- `$severity` variable support (same pattern as `$namespace`)
-- Elasticsearch / OpenSearch backend support for non-Wazuh deployments
-- E2E Playwright test suite against a local Wazuh Docker lab
+### Near term
+- **Grafana plugin catalog submission** — submit unsigned ZIP from GitHub Releases to [grafana/grafana-plugin-repository](https://github.com/grafana/grafana-plugin-repository) (see [signing.md](./signing.md))
+- **Grafana 13 dependency upgrade** — Dependabot PRs #8–#9 open; CI passes but major bump — merge when ready to target Grafana 13
+- **Remaining Dependabot PRs** — eslint/test/webpack-cli groups (#6, #7, #10)
 
-### Later (v1.1+)
-- Separate Manager API vs Indexer credentials
+### v1.1+
+- Separate Manager API vs Indexer credentials (backend supports fallback; needs UI toggle)
+- Dynamic `$severity` template variable (same pattern as `$namespace`)
+- E2E Playwright tests against local Wazuh Docker lab (tests exist but are skipped in CI)
 - Grafana Alerting on Wazuh queries
 - Wazuh Cloud testing
 - Index pattern version auto-detection improvements
@@ -111,6 +114,9 @@ Spec: [superpowers/specs/2026-05-22-deployment-architecture-design.md](./superpo
 |---------|----------------|
 | `connection refused` on `:55000` | Manager port-forward stopped — run `make k8s-forward` |
 | Explore OK, dashboards empty | Datasource UID ≠ `wazuh` |
+| Panels show "datasource not found" on import | Datasource type must be `armanfeyzi-wazuh-datasource`; upgrade to v0.2.5+ bundled dashboards |
+| Vuln count lower than Wazuh UI | Unscored CVEs excluded — upgrade to v0.2.3+ or add `-` to severity filter |
+| SCA panels return HTTP 429 | Upgrade to v0.2.2+ (singleflight + cache) or reduce dashboard refresh rate |
 | Vuln/FIM/SCA panels empty | No matching data indexed in Wazuh yet |
 | Agent dropdown empty | Manager API unreachable or RBAC denied |
 | Panel shows 0 with `$agent` set | Old plugin build without `applyTemplateVariables` — rebuild + restart |
