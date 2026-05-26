@@ -64,3 +64,8 @@ deploy/dev/provisioning/datasources/wazuh.yaml
 
 # Local Wazuh lab clone (deploy/wazuh-lab/setup.sh)
 deploy/wazuh-lab/lab/
+
+# rtk configs
+.clinerules
+.kilocode/
+.agents/
