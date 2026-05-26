@@ -3,8 +3,15 @@ description: Open-source Grafana plugin for Wazuh — alerts, vulnerabilities, F
 theme: jekyll-theme-cayman
 markdown: GFM
 
-# Publish docs/*.md at /installation.html etc. (default Jekyll permalinks)
+# Publish docs/*.md at /installation/ etc. (pretty permalinks)
 permalink: pretty
+
+plugins:
+  - jekyll-relative-links
+
+relative_links:
+  enabled: true
+  collections: true
 
 exclude:
   - superpowers/

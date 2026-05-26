@@ -8,15 +8,15 @@ Open-source Grafana plugin that connects to Wazuh (manager API + indexer) so sec
 
 | Guide | Description |
 |-------|-------------|
-| [Installation](installation.html) | Install plugin, configure datasource, import dashboards |
-| [Development](development.html) | Local plugin development loop |
-| [Kubernetes](kubernetes.html) | Production / in-cluster Wazuh |
-| [RBAC](rbac.html) | Minimum API + indexer permissions |
-| [Field mapping](field-mapping.html) | Normalized fields ↔ Prometheus/Loki labels |
-| [Signing & catalog](signing.html) | Plugin signing and Grafana catalog submission |
-| [Status](status.html) | What's done and what's next |
-| [Roadmap](project-roadmap.html) | Phases and architecture |
-| [Milestones](milestones.html) | Task checklist |
+| [Installation](installation/) | Install plugin, configure datasource, import dashboards |
+| [Development](development/) | Local plugin development loop |
+| [Kubernetes](kubernetes/) | Production / in-cluster Wazuh |
+| [RBAC](rbac/) | Minimum API + indexer permissions |
+| [Field mapping](field-mapping/) | Normalized fields ↔ Prometheus/Loki labels |
+| [Signing & catalog](signing/) | Plugin signing and Grafana catalog submission |
+| [Status](status/) | What's done and what's next |
+| [Roadmap](project-roadmap/) | Phases and architecture |
+| [Milestones](milestones/) | Task checklist |
 
 ## Quick start
 
