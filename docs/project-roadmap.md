@@ -1,7 +1,7 @@
 # Wazuh Grafana Datasource Plugin — Project Roadmap
 
-> **Status:** Phases 0–5 complete; Phase 6 partial; Phase 7 next  
-> **Last updated:** 2026-05-22  
+> **Status:** Phases 0–7 complete  
+> **Last updated:** 2026-05-26  
 > **Live progress:** [status.md](./status.md) · [milestones.md](./milestones.md)
 
 Architecture and delivery plan for the [project brief](../project-brief.md). Task tracking lives in [milestones.md](./milestones.md).
@@ -63,7 +63,7 @@ The repository is a **working Grafana backend plugin** with all v1 data types, b
 | Minimum Grafana version | 10.4+ |
 | Credentials | One username/password pair for Manager API and Indexer in v1 |
 | Dashboards | Bundled under `dashboards/` in the plugin package |
-| Plugin ID | `wazuh-datasource` |
+| Plugin ID | `armanfeyzi-wazuh-datasource` |
 | License | Apache 2.0 |
 
 Separate API/indexer credentials and Grafana.com dashboard publishing are deferred to a later release if needed.

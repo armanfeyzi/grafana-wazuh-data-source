@@ -2,8 +2,8 @@
 
 Task list for the Wazuh Grafana datasource plugin. Architecture detail: [project-roadmap.md](./project-roadmap.md). **Current status:** [status.md](./status.md).
 
-**Targets:** Wazuh 4.7+, Grafana 10.4+, plugin id `wazuh-datasource`.  
-**Last updated:** 2026-05-22
+**Targets:** Wazuh 4.7+, Grafana 10.4+, plugin id `armanfeyzi-wazuh-datasource`.  
+**Last updated:** 2026-05-26
 
 ---
 

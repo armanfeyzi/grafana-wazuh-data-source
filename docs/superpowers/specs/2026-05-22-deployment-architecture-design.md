@@ -148,7 +148,7 @@ apiVersion: 1
 datasources:
   - name: Wazuh
     uid: wazuh                    # stable UID — bundled dashboards depend on this
-    type: wazuh-datasource
+    type: armanfeyzi-wazuh-datasource
     access: proxy
     url: ""                       # plugin uses jsonData URLs
     jsonData:

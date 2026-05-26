@@ -17,11 +17,11 @@ Choose one approach:
 
 | Method | Notes |
 |--------|--------|
-| Custom Grafana image | `COPY dist/` into `/var/lib/grafana/plugins/wazuh-datasource` |
+| Custom Grafana image | `COPY dist/` into `/var/lib/grafana/plugins/armanfeyzi-wazuh-datasource` |
 | Init container | Download ZIP to a shared `emptyDir` volume |
 | Manual mount | ConfigMap/volume with built plugin files |
 
-Set `GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=wazuh-datasource` until the plugin is signed/catalog-listed.
+Set `GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=armanfeyzi-wazuh-datasource` until the plugin is signed/catalog-listed.
 
 ## 2. Find Wazuh service names
 
@@ -56,11 +56,11 @@ Mount the ConfigMap in your Grafana deployment:
 
 ```yaml
 volumeMounts:
-  - name: wazuh-datasource
+  - name: wazuh-provisioning          # volume name (not the plugin ID)
     mountPath: /etc/grafana/provisioning/datasources/wazuh.yaml
     subPath: wazuh.yaml
 volumes:
-  - name: wazuh-datasource
+  - name: wazuh-provisioning
     configMap:
       name: grafana-datasource-wazuh
 ```
@@ -114,7 +114,7 @@ Verify both ports are listening: `ss -tlnp | rg ':55000|:9200'`
 | Save & Test fails (manager) | Service name, port, API credentials, network policy; **manager port-forward running on 55000** |
 | Save & Test fails (indexer) | Indexer URL, separate indexer credentials |
 | `connection refused` on `host.containers.internal:55000` | Manager port-forward stopped — run `make k8s-forward` |
-| Dashboards empty, Explore works | Datasource `uid` must be `wazuh` |
+| Dashboards empty, Explore works | Datasource `uid` must be `wazuh`; datasource `type` must be `armanfeyzi-wazuh-datasource` |
 | Panels empty with `$agent` filter | Rebuild plugin (`make dev`); needs `applyTemplateVariables` support |
 | No vulnerabilities / FIM / SCA | Wazuh data not indexed yet — not a Grafana wiring issue |
 | Agent dropdown empty | Manager API unreachable or RBAC denied |

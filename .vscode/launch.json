@@ -23,7 +23,7 @@
       "substitutePath": [
         {
           "from": "${workspaceFolder}",
-          "to": "/root/wazuh-datasource"
+          "to": "/root/armanfeyzi-wazuh-datasource"
         }
       ]
     }

@@ -13,12 +13,12 @@ services:
       - SYS_PTRACE
     volumes:
       # Paths are relative to the compose file that includes this service.
-      - ./dist:/var/lib/grafana/plugins/wazuh-datasource:Z
-      - .:/root/wazuh-datasource:Z
+      - ./dist:/var/lib/grafana/plugins/armanfeyzi-wazuh-datasource:Z
+      - .:/root/armanfeyzi-wazuh-datasource:Z
 
     environment:
       NODE_ENV: development
-      GF_LOG_FILTERS: plugin.wazuh-datasource:debug
+      GF_LOG_FILTERS: plugin.armanfeyzi-wazuh-datasource:debug
       GF_LOG_LEVEL: debug
       GF_DATAPROXY_LOGGING: 1
-      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: wazuh-datasource
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: armanfeyzi-wazuh-datasource

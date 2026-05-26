@@ -11,7 +11,7 @@ data:
     datasources:
       - name: Wazuh
         uid: wazuh
-        type: wazuh-datasource
+        type: armanfeyzi-wazuh-datasource
         access: proxy
         isDefault: false
         jsonData:

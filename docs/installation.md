@@ -15,14 +15,14 @@
 2. Unzip into Grafana's plugin directory:
 
    ```text
-   /var/lib/grafana/plugins/wazuh-datasource/
+   /var/lib/grafana/plugins/armanfeyzi-wazuh-datasource/
    ```
 
 3. Allow unsigned plugins (until catalog listing):
 
    ```ini
    [plugins]
-   allow_loading_unsigned_plugins = wazuh-datasource
+   allow_loading_unsigned_plugins = armanfeyzi-wazuh-datasource
    ```
 
 4. Restart Grafana.
@@ -53,6 +53,7 @@ Click **Save & test**. Both manager API and indexer must respond.
 
 Copy `provisioning/examples/datasources.yaml.example` and set:
 
+- `type: armanfeyzi-wazuh-datasource` — must match the plugin ID
 - `uid: wazuh` — **required** for bundled dashboards
 - Your manager and indexer URLs
 - Credentials via `secureJsonData` or Grafana secret injection
