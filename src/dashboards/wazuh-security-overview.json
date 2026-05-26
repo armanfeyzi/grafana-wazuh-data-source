@@ -1,6 +1,19 @@
 {
   "annotations": {
-    "list": []
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
   },
   "editable": true,
   "fiscalYearStartMonth": 0,
@@ -15,46 +28,59 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "#F2495C",
-            "mode": "fixed"
+            "mode": "palette-classic"
           },
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "#F2495C", "value": 0 }
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
             ]
           },
           "unit": "none"
         },
         "overrides": []
       },
-      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
-      "id": 10,
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "center",
+        "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
+          "calcs": [
+            "count"
+          ],
+          "fields": "/^agent_id$/",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
+      "pluginVersion": "12.4.1",
       "targets": [
         {
-          "refId": "A",
-          "dataType": "alerts",
-          "format": "stat",
-          "filters": {
-            "agentNames": ["$agent"],
-            "ruleLevelMin": 15
-          }
+          "dataType": "agents",
+          "format": "table",
+          "refId": "A"
         }
       ],
-      "title": "Critical severity",
-      "description": "Rule level 15 or higher",
+      "title": "Registered agents",
       "type": "stat"
     },
     {
@@ -65,185 +91,59 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "#FF780A",
+            "fixedColor": "semi-dark-blue",
             "mode": "fixed"
           },
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "#FF780A", "value": 0 }
+              {
+                "color": "semi-dark-blue",
+                "value": 0
+              }
             ]
           },
           "unit": "none"
         },
         "overrides": []
       },
-      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
-      "id": 11,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 4,
+        "y": 0
       },
-      "targets": [
-        {
-          "refId": "A",
-          "dataType": "alerts",
-          "format": "stat",
-          "filters": {
-            "agentNames": ["$agent"],
-            "ruleLevelMin": 12,
-            "ruleLevelMax": 14
-          }
-        }
-      ],
-      "title": "High severity",
-      "description": "Rule level 12 to 14",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "wazuh-datasource",
-        "uid": "wazuh"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "#FADE2A",
-            "mode": "fixed"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "#FADE2A", "value": 0 }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
-      "id": 12,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "dataType": "alerts",
-          "format": "stat",
-          "filters": {
-            "agentNames": ["$agent"],
-            "ruleLevelMin": 7,
-            "ruleLevelMax": 11
-          }
-        }
-      ],
-      "title": "Medium severity",
-      "description": "Rule level 7 to 11",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "wazuh-datasource",
-        "uid": "wazuh"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "#5794F2",
-            "mode": "fixed"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "#5794F2", "value": 0 }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
-      "id": 13,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "dataType": "alerts",
-          "format": "stat",
-          "filters": {
-            "agentNames": ["$agent"],
-            "ruleLevelMin": 0,
-            "ruleLevelMax": 6
-          }
-        }
-      ],
-      "title": "Low severity",
-      "description": "Rule level 0 to 6",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "wazuh-datasource",
-        "uid": "wazuh"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 6, "w": 4, "x": 0, "y": 6 },
       "id": 1,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
+      "pluginVersion": "12.4.1",
       "targets": [
         {
-          "refId": "A",
           "dataType": "alerts",
-          "format": "stat",
           "filters": {
-            "agentNames": ["$agent"]
-          }
+            "agentNames": [
+              "$agent"
+            ]
+          },
+          "format": "stat",
+          "limit": 100,
+          "refId": "A"
         }
       ],
       "title": "Alerts in range",
@@ -256,30 +156,69 @@
       },
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
+          "color": {
+            "fixedColor": "blue",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
           "unit": "none"
         },
         "overrides": []
       },
-      "gridPos": { "h": 6, "w": 4, "x": 4, "y": 6 },
-      "id": 2,
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
+      "id": 9,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["count"],
-          "fields": "/^agent_id$/",
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
           "values": false
-        }
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
+      "pluginVersion": "12.4.1",
       "targets": [
         {
-          "refId": "A",
-          "dataType": "agents",
-          "format": "table"
+          "dataType": "alerts",
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ],
+            "ruleLevelMax": 6,
+            "ruleLevelMin": 0
+          },
+          "format": "stat",
+          "limit": 100,
+          "refId": "A"
         }
       ],
-      "title": "Registered agents",
+      "title": "Low severity",
       "type": "stat"
     },
     {
@@ -287,30 +226,273 @@
         "type": "wazuh-datasource",
         "uid": "wazuh"
       },
-      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 6 },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.1",
+      "targets": [
+        {
+          "dataType": "alerts",
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ],
+            "ruleLevelMax": 11,
+            "ruleLevelMin": 7
+          },
+          "format": "stat",
+          "limit": 100,
+          "refId": "A"
+        }
+      ],
+      "title": "Medium severity",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "orange",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 16,
+        "y": 0
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.1",
+      "targets": [
+        {
+          "dataType": "alerts",
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ],
+            "ruleLevelMax": 14,
+            "ruleLevelMin": 12
+          },
+          "format": "stat",
+          "limit": 100,
+          "refId": "A"
+        }
+      ],
+      "title": "High severity",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "red",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.1",
+      "targets": [
+        {
+          "dataType": "alerts",
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ],
+            "ruleLevelMin": 15
+          },
+          "format": "stat",
+          "limit": 100,
+          "refId": "A"
+        }
+      ],
+      "title": "Critical severity",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 9,
+        "x": 0,
+        "y": 8
+      },
       "id": 5,
       "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
         "pieType": "donut",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": true
         },
-        "legend": {
-          "displayMode": "list",
-          "placement": "right",
-          "showLegend": true
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
+      "pluginVersion": "12.4.1",
       "targets": [
         {
-          "refId": "A",
           "dataType": "alerts",
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          },
           "format": "table",
           "limit": 2000,
-          "filters": {
-            "agentNames": ["$agent"]
-          }
+          "refId": "A"
         }
       ],
       "title": "Alerts By Agent",
@@ -319,71 +501,15 @@
           "id": "groupBy",
           "options": {
             "fields": {
-              "rule_id": {
-                "aggregations": ["count"],
-                "operation": "aggregate"
-              },
               "agent": {
                 "aggregations": [],
                 "operation": "groupby"
-              }
-            }
-          }
-        },
-        {
-          "id": "sortBy",
-          "options": {
-            "fields": {},
-            "sort": [{ "field": "rule_id (count)", "desc": true }]
-          }
-        }
-      ],
-      "type": "piechart"
-    },
-    {
-      "datasource": {
-        "type": "wazuh-datasource",
-        "uid": "wazuh"
-      },
-      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 6 },
-      "id": 7,
-      "options": {
-        "pieType": "donut",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": true
-        },
-        "legend": {
-          "displayMode": "list",
-          "placement": "right",
-          "showLegend": true
-        }
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "dataType": "alerts",
-          "format": "table",
-          "limit": 2000,
-          "filters": {
-            "agentNames": ["$agent"]
-          }
-        }
-      ],
-      "title": "Alerts By Rule",
-      "transformations": [
-        {
-          "id": "groupBy",
-          "options": {
-            "fields": {
-              "rule_id": {
-                "aggregations": ["count"],
-                "operation": "aggregate"
               },
-              "rule_description": {
-                "aggregations": [],
-                "operation": "groupby"
+              "rule_id": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
               }
             }
           }
@@ -392,7 +518,12 @@
           "id": "sortBy",
           "options": {
             "fields": {},
-            "sort": [{ "field": "rule_id (count)", "desc": true }]
+            "sort": [
+              {
+                "desc": true,
+                "field": "rule_id (count)"
+              }
+            ]
           }
         }
       ],
@@ -405,39 +536,95 @@
       },
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "lineWidth": 2,
-            "showPoints": "never",
-            "stacking": { "mode": "none" }
+          "color": {
+            "mode": "palette-classic"
           },
-          "unit": "none"
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 12 },
-      "id": 3,
+      "gridPos": {
+        "h": 8,
+        "w": 7,
+        "x": 9,
+        "y": 8
+      },
+      "id": 6,
       "options": {
         "legend": {
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
-        "tooltip": { "mode": "single" }
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
       },
+      "pluginVersion": "12.4.1",
       "targets": [
         {
-          "refId": "A",
           "dataType": "alerts",
-          "format": "time_series",
           "filters": {
-            "agentNames": ["$agent"]
+            "agentNames": [
+              "$agent"
+            ]
+          },
+          "format": "table",
+          "limit": 2000,
+          "refId": "A"
+        }
+      ],
+      "title": "Alerts By Level",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "rule_id": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              },
+              "severity_level": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "rule_id (count)"
+              }
+            ]
           }
         }
       ],
-      "title": "Alerts over time",
-      "type": "timeseries"
+      "type": "piechart"
     },
     {
       "datasource": {
@@ -445,38 +632,275 @@
         "uid": "wazuh"
       },
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
         "overrides": []
       },
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 20 },
-      "id": 4,
-      "options": {
-        "showHeader": true,
-        "sortBy": [{ "desc": true, "displayName": "Time" }]
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 8
       },
+      "id": 7,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.1",
       "targets": [
         {
-          "refId": "A",
           "dataType": "alerts",
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          },
+          "format": "table",
+          "limit": 2000,
+          "refId": "A"
+        }
+      ],
+      "title": "Alerts By Rule",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "rule_description": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "rule_id": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "rule_id (count)"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 4,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Time"
+          }
+        ]
+      },
+      "pluginVersion": "12.4.1",
+      "targets": [
+        {
+          "dataType": "alerts",
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          },
           "format": "table",
           "limit": 50,
-          "filters": {
-            "agentNames": ["$agent"]
-          }
+          "refId": "A"
         }
       ],
       "title": "Latest alerts",
       "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "wazuh-datasource",
+        "uid": "wazuh"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 26
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.1",
+      "targets": [
+        {
+          "dataType": "alerts",
+          "filters": {
+            "agentNames": [
+              "$agent"
+            ]
+          },
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "title": "Alerts over time",
+      "type": "timeseries"
     }
   ],
+  "preload": false,
   "refresh": "30s",
-  "schemaVersion": 39,
-  "tags": ["wazuh", "security"],
+  "schemaVersion": 42,
+  "tags": [
+    "wazuh",
+    "security"
+  ],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": true,
           "text": "All",
           "value": "$__all"
         },
@@ -485,7 +909,6 @@
           "uid": "wazuh"
         },
         "definition": "agents",
-        "hide": 0,
         "includeAll": true,
         "label": "Agent",
         "multi": true,
@@ -494,6 +917,7 @@
         "query": "agents",
         "refresh": 1,
         "regex": "",
+        "regexApplyTo": "value",
         "sort": 1,
         "type": "query"
       }
@@ -503,8 +927,10 @@
     "from": "now-24h",
     "to": "now"
   },
+  "timepicker": {},
   "timezone": "browser",
   "title": "Wazuh — Security Overview",
   "uid": "wazuh-security-overview",
-  "version": 9
+  "version": 1,
+  "weekStart": ""
 }
