@@ -2,9 +2,9 @@
 
 > **Status:** Phases 0–7 complete  
 > **Last updated:** 2026-05-26  
-> **Live progress:** [status.md](./status.md) · [milestones.md](./milestones.md)
+> **Live progress:** [status.md](./status.md)
 
-Architecture and delivery plan for the [project brief](../project-brief.md). Task tracking lives in [milestones.md](./milestones.md).
+Architecture and delivery plan for the [project brief](../project-brief.md).
 
 ---
 

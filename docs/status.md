@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-05-26 (v0.2.5)
 
-Living summary of what is implemented, what was fixed recently, and what comes next. Task detail: [milestones.md](./milestones.md). Architecture: [project-roadmap.md](./project-roadmap.md).
+Living summary of what is implemented, what was fixed recently, and what comes next. Architecture: [project-roadmap.md](./project-roadmap.md).
 
 ---
 
@@ -86,8 +86,6 @@ deploy/wazuh-lab/       Optional local Wazuh docker lab
 deploy/kubernetes/      K8s provisioning examples
 provisioning/examples/  Copy-paste templates for production
 ```
-
-Spec: [superpowers/specs/2026-05-22-deployment-architecture-design.md](./superpowers/specs/2026-05-22-deployment-architecture-design.md)
 
 ---
 

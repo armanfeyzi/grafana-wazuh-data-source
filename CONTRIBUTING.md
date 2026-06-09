@@ -172,7 +172,7 @@ Add `src/dashboards/wazuh-logs.json` and register it in `src/plugin.json`.
 - [ ] Error paths return `models.WazuhError` (not raw `fmt.Errorf`)
 - [ ] No credentials or internal paths in user-visible error messages
 - [ ] `docs/field-mapping.md` updated if new fields are emitted
-- [ ] `docs/status.md` updated if a phase or milestone changes
+- [ ] `docs/status.md` updated if release scope or supported versions change
 
 ---
 

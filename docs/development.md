@@ -112,4 +112,4 @@ go run github.com/magefile/mage@latest -v test
 | `deploy/kubernetes/` | Production provisioning examples |
 | `provisioning/examples/` | Copy-paste templates |
 
-See [deployment architecture spec](superpowers/specs/2026-05-22-deployment-architecture-design.md).
+See [CONTRIBUTING.md](../CONTRIBUTING.md#project-structure) for the full layout.

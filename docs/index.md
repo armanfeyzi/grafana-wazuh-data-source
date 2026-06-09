@@ -16,7 +16,6 @@ Open-source Grafana plugin that connects to Wazuh (manager API + indexer) so sec
 | [Signing & catalog](signing/) | Plugin signing and Grafana catalog submission |
 | [Status](status/) | What's done and what's next |
 | [Roadmap](project-roadmap/) | Phases and architecture |
-| [Milestones](milestones/) | Task checklist |
 
 ## Quick start
 
