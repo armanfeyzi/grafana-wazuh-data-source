@@ -2,6 +2,10 @@
 
 Open-source Grafana plugin that connects to Wazuh (manager API + indexer) so security data appears alongside your existing dashboards — without manual OpenSearch configuration.
 
+![Wazuh Security Overview dashboard in Grafana](docs/img/security-overview-dashboard.png)
+
+Bundled dashboards cover alerts, vulnerabilities, FIM, SCA, and agent status. Install from [GitHub Releases](https://github.com/armanfeyzi/grafana-wazuh-data-source/releases) — see the [Installation Guide](docs/installation.md).
+
 ## Quick start
 
 ```bash
