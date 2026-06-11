@@ -65,10 +65,34 @@ spec:
 
 ---
 
-## 3. Workflow for Production Submission
+## 3. Submit to the Grafana Plugin Catalog
 
-Once you are done testing the plugin in your cluster and are ready to submit it for public review:
+Grafana no longer accepts submissions via GitHub PR to `grafana-plugin-repository`. Use **Grafana Cloud → My Plugins**.
 
-1. Download the unsigned `.zip` package from your latest GitHub Release.
-2. Submit a Pull Request to the [Grafana Plugin Repository](https://github.com/grafana/grafana-plugin-repository) following their checklist.
-3. Upon approval, the Grafana team will automatically sign, publish, and list your plugin under the official plugin catalog at `grafana.com/plugins`.
+### Before you submit
+
+1. Run the full plugin validator on the release ZIP (zero errors).
+2. Confirm screenshots are in `plugin.json` and look good with live data.
+3. Read [docs/reviewer-quickstart.md](reviewer-quickstart.md) — link it in submission notes.
+
+Regenerate screenshots from a Grafana instance with live Wazuh data:
+
+```bash
+GRAFANA_URL=https://grafana.example.com \
+GRAFANA_USER=admin GRAFANA_PASSWORD=secret \
+node scripts/capture-catalog-screenshots.mjs
+npm run build
+```
+
+### Submission steps
+
+1. Create a [Grafana Cloud](https://grafana.com/) account. Org slug must match the plugin ID prefix (`armanfeyzi`).
+2. Tag a release (`git tag v0.2.6 && git push origin v0.2.6`) and download the unsigned ZIP from GitHub Releases.
+3. In Grafana Cloud: **Organization settings → My Plugins → Submit New Plugin**.
+4. Upload `armanfeyzi-wazuh-datasource-<version>.zip` (do **not** self-sign before approval).
+5. Set **OS & Architecture** to **Single** (linux_amd64 binary in one archive).
+6. Paste submission notes including the reviewer quickstart URL and optional test-lab access.
+
+Official guide: [Publish or update a plugin](https://grafana.com/developers/plugin-tools/publish-a-plugin/publish-a-plugin)
+
+Upon approval, Grafana signs and lists the plugin at `grafana.com/grafana/plugins/armanfeyzi-wazuh-datasource`.

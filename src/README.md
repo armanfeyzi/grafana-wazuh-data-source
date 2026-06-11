@@ -28,6 +28,7 @@ See the [Installation Guide](https://github.com/armanfeyzi/grafana-wazuh-data-so
 | [Status](https://github.com/armanfeyzi/grafana-wazuh-data-source/blob/main/docs/status.md) | What's done and what's next |
 | [Roadmap](https://github.com/armanfeyzi/grafana-wazuh-data-source/blob/main/docs/project-roadmap.md) | Phases and architecture |
 | [Contributing](https://github.com/armanfeyzi/grafana-wazuh-data-source/blob/main/CONTRIBUTING.md) | Dev setup, architecture, adding a data type |
+| [Reviewer quickstart](https://github.com/armanfeyzi/grafana-wazuh-data-source/blob/main/docs/reviewer-quickstart.md) | Grafana catalog reviewers — 15 min test path |
 
 ## Requirements
 

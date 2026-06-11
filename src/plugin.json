@@ -25,8 +25,34 @@
       "small": "img/logo.svg",
       "large": "img/logo.svg"
     },
-    "links": [],
-    "screenshots": [],
+    "links": [
+      {
+        "name": "Repository",
+        "url": "https://github.com/armanfeyzi/grafana-wazuh-data-source"
+      },
+      {
+        "name": "Documentation",
+        "url": "https://github.com/armanfeyzi/grafana-wazuh-data-source/blob/main/docs/installation.md"
+      },
+      {
+        "name": "Reviewer quickstart",
+        "url": "https://github.com/armanfeyzi/grafana-wazuh-data-source/blob/main/docs/reviewer-quickstart.md"
+      }
+    ],
+    "screenshots": [
+      {
+        "name": "Security Overview dashboard",
+        "path": "img/screenshot-security-overview.png"
+      },
+      {
+        "name": "Datasource configuration",
+        "path": "img/screenshot-datasource-config.png"
+      },
+      {
+        "name": "Explore query editor",
+        "path": "img/screenshot-explore-alerts.png"
+      }
+    ],
     "version": "%VERSION%",
     "updated": "%TODAY%"
   },
