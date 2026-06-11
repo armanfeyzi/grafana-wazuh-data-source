@@ -10,9 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- **Catalog screenshots** — Security Overview dashboard, datasource configuration, and Explore query editor images in `plugin.json` for Grafana plugin catalog listing (ARM-55).
-- **Reviewer quickstart** — [docs/reviewer-quickstart.md](docs/reviewer-quickstart.md) with 15-minute validation paths for Grafana plugin reviewers (ARM-58).
-- **Screenshot capture script** — `scripts/capture-catalog-screenshots.mjs` to regenerate catalog images from any Grafana instance.
+- **Catalog screenshots** — Security Overview dashboard, datasource configuration, and Explore query editor images in `plugin.json` for the Grafana plugin catalog.
+- **Reviewer quickstart** — [docs/reviewer-quickstart.md](docs/reviewer-quickstart.md) for Grafana plugin reviewers validating the datasource in under 15 minutes.
+- **Screenshot capture script** — `scripts/capture-catalog-screenshots.mjs` to regenerate catalog images from a Grafana instance.
 
 ### Changed
 

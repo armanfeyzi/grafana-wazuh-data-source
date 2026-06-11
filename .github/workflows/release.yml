@@ -1,11 +1,10 @@
-# This GitHub Action automates the process of building and releasing Grafana plugins.
-# (For more information, see https://github.com/grafana/plugin-actions/blob/main/build-plugin/README.md)
+# Package and publish release ZIPs from CHANGELOG.md — no maintainer boilerplate in release notes.
 name: Release
 
 on:
   push:
     tags:
-      - 'v*' # Run workflow on version tags, e.g. v0.1.0.
+      - 'v*'
 
 permissions: read-all
 
@@ -21,24 +20,19 @@ jobs:
 
       - name: Build and package plugin
         id: build
-        uses: grafana/plugin-actions/build-plugin@build-plugin/v1.2.0
+        uses: grafana/plugin-actions/package-plugin@package-plugin/v1.2.0
         with:
           go-version: '1.26.4'
-          # policy_token: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
-          # NOTE: policy_token is commented out because public community plugins cannot
-          # be signed before they are approved by the Grafana plugin review team.
-          # Grafana's publishing system will automatically sign the plugin during the review/listing process.
+          node-version: '22'
 
       - name: Extract CHANGELOG excerpt
         id: changelog
         run: |
-          # Extract the section for the current tag version
           VERSION="${GITHUB_REF_NAME#v}"
-          NOTES=$(awk "/^## \[${VERSION}\]/{flag=1; next} /^## \[/{flag=0} flag" CHANGELOG.md)
+          NOTES=$(awk "/^## \\[${VERSION}\\]/{flag=1; next} /^## \\[/{flag=0} flag" CHANGELOG.md)
           if [ -z "$NOTES" ]; then
-            NOTES="See [CHANGELOG.md](CHANGELOG.md) for details."
+            NOTES="See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details."
           fi
-          # GitHub Actions multi-line output
           {
             echo "notes<<EOF"
             echo "$NOTES"
@@ -51,8 +45,10 @@ jobs:
           name: "Wazuh datasource ${{ github.ref_name }}"
           body: ${{ steps.changelog.outputs.notes }}
           files: |
-            *.zip
+            ${{ steps.build.outputs.archive }}
+            ${{ steps.build.outputs.archive-sha1sum }}
           draft: false
           prerelease: ${{ contains(github.ref_name, '-') }}
+          generate_release_notes: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

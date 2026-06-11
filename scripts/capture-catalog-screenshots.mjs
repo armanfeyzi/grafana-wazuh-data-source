@@ -1,5 +1,5 @@
 /**
- * Capture catalog screenshots for plugin.json (ARM-55).
+ * Capture catalog screenshots for plugin.json.
  *
  * Usage:
  *   GRAFANA_URL=http://grafana.example.com \

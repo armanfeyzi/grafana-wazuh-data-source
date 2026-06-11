@@ -80,10 +80,6 @@ Datasource URLs when Grafana runs in Docker (`make dev`):
 
 Use credentials from your cluster secrets. See [development.md](./development.md) for `kubectl` examples.
 
-## Path C — Reviewer-provided environment
-
-The maintainer can provide temporary access to a live Grafana + Wazuh lab on request (in-cluster Wazuh 4.x, datasource UID `wazuh`, bundled dashboards provisioned). Mention this in the submission notes if needed.
-
 ## Validation checklist
 
 | Step | Expected |
