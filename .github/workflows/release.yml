@@ -23,7 +23,7 @@ jobs:
         id: build
         uses: grafana/plugin-actions/build-plugin@build-plugin/v1.2.0
         with:
-          go-version: '1.26'
+          go-version: '1.26.4'
           # policy_token: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
           # NOTE: policy_token is commented out because public community plugins cannot
           # be signed before they are approved by the Grafana plugin review team.
