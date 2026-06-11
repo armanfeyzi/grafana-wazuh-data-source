@@ -37,6 +37,10 @@
       {
         "name": "Reviewer quickstart",
         "url": "https://github.com/armanfeyzi/grafana-wazuh-data-source/blob/main/docs/reviewer-quickstart.md"
+      },
+      {
+        "name": "Sponsor",
+        "url": "https://github.com/sponsors/armanfeyzi"
       }
     ],
     "screenshots": [

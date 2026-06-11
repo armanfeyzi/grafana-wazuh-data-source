@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.7] — 2026-06-11
+
+### Changed
+
+- **Release pipeline** — Install `govulncheck` before packaging and attach GitHub build provenance attestation to release ZIPs (Grafana catalog review requirements).
+- **Plugin metadata** — Added sponsorship link in `plugin.json`.
+
+---
+
 ## [0.2.6] — 2026-06-11
 
 ### Added

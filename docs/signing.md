@@ -6,7 +6,7 @@ This document explains how Grafana plugin signing works for public and private p
 
 ## 1. Why `policy_token` is Commented Out in CI/CD
 
-For the release pipeline to package the plugin successfully, the `policy_token` input in `.github/workflows/release.yml` has been commented out:
+For the release pipeline to package the plugin successfully, the `policy_token` input in `.github/workflows/release.yml` is omitted until catalog approval:
 
 ```yaml
       - name: Build and package plugin
@@ -14,8 +14,9 @@ For the release pipeline to package the plugin successfully, the `policy_token` 
         uses: grafana/plugin-actions/package-plugin@package-plugin/v1.2.0
         with:
           go-version: '1.26.4'
-          # policy_token: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
 ```
+
+Release builds install `govulncheck` and attach a [GitHub build provenance attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations) to the ZIP, as required by Grafana catalog review.
 
 ### The Root Cause: API 409 Conflict
 When a plugin ID is configured as a public community plugin (e.g., `armanfeyzi-wazuh-datasource`), Grafana Cloud's signing API will reject all public signature requests with a `409 Conflict / InvalidArgument` error **until the plugin has been formally approved and registered in the Grafana Plugin Catalog**.

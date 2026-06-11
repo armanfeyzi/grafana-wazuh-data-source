@@ -2,7 +2,7 @@
 
 Open-source Grafana plugin that connects to Wazuh (manager API + indexer) so security data appears alongside your existing dashboards — without manual OpenSearch configuration.
 
-**Latest release:** [v0.2.6](https://github.com/armanfeyzi/grafana-wazuh-data-source/releases/latest)
+**Latest release:** [v0.2.7](https://github.com/armanfeyzi/grafana-wazuh-data-source/releases/latest)
 
 ## Guides
 
