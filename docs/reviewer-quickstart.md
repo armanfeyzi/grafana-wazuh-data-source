@@ -22,14 +22,23 @@ Connects Grafana to **Wazuh Manager API** (JWT auth) and **Wazuh Indexer** (Open
 From the plugin repository root:
 
 ```bash
-npm ci
-make lab-up          # ~5 min first run; clones wazuh-docker 4.8.0
-make dev-config      # first time only
-make dev             # Grafana at http://localhost:3000 (terminal 2)
-make lab-connect     # attach Grafana container to lab network (terminal 3)
+npm ci && npm run build
+go run github.com/magefile/mage@latest -v build:linux
+make lab-up          # first boot ~1–2 min; see Podman note below
+make lab-dev-config  # provisions lab URLs (not the Kubernetes dev-config)
+make dev             # Grafana at http://localhost:3000 (keep running)
+make lab-connect     # separate terminal — attach Grafana to lab network
 ```
 
-**Lab credentials** (default wazuh-docker single-node):
+**Podman / Fedora:** If the manager API does not respond after `make lab-up`, run `make lab-reset` and wait until the script prints `Manager API is up.` Verify on the host:
+
+```bash
+curl -k -u 'wazuh-wui:MyS3cr37P450r.*-' -X POST \
+  'https://127.0.0.1:55000/security/user/authenticate?raw=true'
+curl -k -u 'admin:SecretPassword' 'https://127.0.0.1:9200/_cluster/health'
+```
+
+**Lab credentials** (default wazuh-docker single-node, also in `deploy/wazuh-lab/examples/datasource.yaml.example`):
 
 | Field | Value |
 |-------|--------|
@@ -41,7 +50,7 @@ make lab-connect     # attach Grafana container to lab network (terminal 3)
 | Indexer password | `SecretPassword` |
 | Skip TLS verify | **on** |
 
-Configure via **Connections → Data sources → Wazuh** or copy `deploy/wazuh-lab/examples/datasource.yaml.example`.
+`make lab-dev-config` writes `deploy/dev/provisioning/datasources/wazuh.yaml` with these values. Do **not** use `make dev-config` for Path A — that file targets Kubernetes port-forward URLs.
 
 **Allow unsigned plugin** (required until catalog signing):
 

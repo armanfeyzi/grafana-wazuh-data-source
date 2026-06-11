@@ -1,8 +1,9 @@
 COMPOSE := docker compose -f deploy/dev/docker-compose.yaml
 DEV_DS := deploy/dev/provisioning/datasources/wazuh.yaml
 DEV_DS_EXAMPLE := deploy/dev/provisioning/datasources/wazuh.yaml.example
+LAB_DS_EXAMPLE := deploy/wazuh-lab/examples/datasource.yaml.example
 
-.PHONY: build backend dev dev-config dev-down k8s-forward lab-up lab-down lab-reset lab-connect
+.PHONY: build backend dev dev-config lab-dev-config dev-down k8s-forward lab-up lab-down lab-reset lab-connect
 
 build:
 	npm run build
@@ -15,10 +16,16 @@ dev-config:
 	@if [ ! -f "$(DEV_DS)" ]; then \
 		cp "$(DEV_DS_EXAMPLE)" "$(DEV_DS)"; \
 		echo ""; \
-		echo "Created $(DEV_DS)"; \
+		echo "Created $(DEV_DS) for Kubernetes port-forward dev (Path B)."; \
+		echo "For local Wazuh lab (Path A), run: make lab-dev-config"; \
 		echo "Edit passwords (from kubectl secrets) then run: make dev"; \
 		echo ""; \
 	fi
+
+# Provisioning for local Wazuh Docker lab — use with make lab-up && make dev && make lab-connect
+lab-dev-config:
+	cp "$(LAB_DS_EXAMPLE)" "$(DEV_DS)"
+	@echo "Created $(DEV_DS) for local Wazuh lab (wazuh.manager / wazuh.indexer)."
 
 dev: build dev-config
 	-$(COMPOSE) down --remove-orphans 2>/dev/null
