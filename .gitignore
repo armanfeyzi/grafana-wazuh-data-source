@@ -56,6 +56,11 @@ profile.cov
 go.work
 go.work.sum
 
+# Local plugin packaging (dist/ is renamed to plugin ID when zipping locally)
+/armanfeyzi-wazuh-datasource/
+/armanfeyzi-wazuh-datasource-*.zip
+/armanfeyzi-wazuh-datasource-*.zip.sha1
+
 # env
 .env
 
