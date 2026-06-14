@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.8] — 2026-06-14
+
+### Changed
+
+- **Go toolchain** — Set `go 1.25.7` and `grafana-plugin-sdk-go v0.291.0` so Grafana's catalog validator (Go 1.25) can run `govulncheck` source scans.
+- **Release pipeline** — Build releases with Go 1.25.10 to match Grafana's review environment.
+
+---
+
 ## [0.2.7] — 2026-06-11
 
 ### Changed

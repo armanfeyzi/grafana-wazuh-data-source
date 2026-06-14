@@ -13,7 +13,7 @@ For the release pipeline to package the plugin successfully, the `policy_token` 
         id: build
         uses: grafana/plugin-actions/package-plugin@package-plugin/v1.2.0
         with:
-          go-version: '1.26.4'
+          go-version: '1.25.10'
 ```
 
 Release builds install `govulncheck` and attach a [GitHub build provenance attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations) to the ZIP, as required by Grafana catalog review.
@@ -77,6 +77,20 @@ Publishers submit through [Grafana Cloud → My Plugins](https://grafana.com/dev
 - Public source repository with `CHANGELOG.md`, `LICENSE`, and documentation
 
 After approval, Grafana signs the plugin and lists it at `grafana.com/grafana/plugins/armanfeyzi-wazuh-datasource`. Users can then install without `allow_loading_unsigned_plugins`.
+
+### Submission form fields
+
+When submitting or updating via Grafana Cloud → My Plugins, use **separate URLs** for the packaged plugin and the source repository:
+
+| Field | Example for version `0.2.8` |
+|-------|-----------------------------|
+| **URL** (plugin ZIP) | `https://github.com/armanfeyzi/grafana-wazuh-data-source/releases/download/v0.2.8/armanfeyzi-wazuh-datasource-0.2.8.zip` |
+| **Source code URL** | `https://github.com/armanfeyzi/grafana-wazuh-data-source/tree/v0.2.8` |
+| **SHA1** | Contents of `armanfeyzi-wazuh-datasource-0.2.8.zip.sha1` from the same GitHub release |
+
+Do **not** use the plugin ZIP URL as the source code URL. The source field must point at the Git repository (tagged release branch) so Grafana can run `govulncheck` against `go.mod` and verify GitHub build provenance attestation.
+
+Release builds are produced by GitHub Actions (`.github/workflows/release.yml`) with `govulncheck` and [build provenance attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations) enabled.
 
 Regenerate catalog screenshots:
 

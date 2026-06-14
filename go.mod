@@ -1,11 +1,9 @@
 module github.com/armanfeyzi/grafana-wazuh-data-source-plugin
 
-go 1.26.3
-
-toolchain go1.26.4
+go 1.25.7
 
 require (
-	github.com/grafana/grafana-plugin-sdk-go v0.292.1
+	github.com/grafana/grafana-plugin-sdk-go v0.291.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	golang.org/x/sync v0.20.0
 )
