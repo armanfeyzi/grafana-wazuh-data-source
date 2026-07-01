@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.9] — 2026-07-01
+
+### Changed
+
+- **HTTP client** — Use Grafana SDK `backend/httpclient` for proxy, TLS, and transport consistency.
+- **Error messages** — Sanitize all user-facing errors; no raw upstream host, port, or response bodies in the UI.
+- **Go toolchain** — Bump to Go 1.26.4 (CVE fixes GO-2026-5037, GO-2026-5038, GO-2026-5039; required by SDK v0.292.2).
+- **SDK** — Update `grafana-plugin-sdk-go` to v0.292.2.
+- **Catalog README** — Rewrite `src/README.md` for Grafana plugin catalog users.
+
+---
+
 ## [0.2.8] — 2026-06-14
 
 ### Changed

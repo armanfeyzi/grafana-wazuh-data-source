@@ -8,6 +8,7 @@ import (
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/indexer"
+	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/models"
 	"github.com/armanfeyzi/grafana-wazuh-data-source-plugin/pkg/wazuhapi"
 )
 
@@ -42,7 +43,7 @@ func (d *Datasource) callResourceAgents(ctx context.Context, sender backend.Call
 	if err != nil {
 		return sender.Send(&backend.CallResourceResponse{
 			Status: http.StatusBadGateway,
-			Body:   []byte(fmt.Sprintf(`{"message":%q}`, err.Error())),
+			Body:   []byte(fmt.Sprintf(`{"message":%q}`, models.UserMessage(err))),
 		})
 	}
 
@@ -50,7 +51,7 @@ func (d *Datasource) callResourceAgents(ctx context.Context, sender backend.Call
 	if err != nil {
 		return sender.Send(&backend.CallResourceResponse{
 			Status: http.StatusInternalServerError,
-			Body:   []byte(fmt.Sprintf(`{"message":%q}`, err.Error())),
+			Body:   []byte(fmt.Sprintf(`{"message":%q}`, models.UserMessage(err))),
 		})
 	}
 
@@ -73,7 +74,7 @@ func (d *Datasource) callResourceNamespaces(ctx context.Context, sender backend.
 	if err != nil {
 		return sender.Send(&backend.CallResourceResponse{
 			Status: http.StatusInternalServerError,
-			Body:   []byte(fmt.Sprintf(`{"message":%q}`, err.Error())),
+			Body:   []byte(fmt.Sprintf(`{"message":%q}`, models.UserMessage(err))),
 		})
 	}
 
@@ -82,7 +83,7 @@ func (d *Datasource) callResourceNamespaces(ctx context.Context, sender backend.
 	if err != nil {
 		return sender.Send(&backend.CallResourceResponse{
 			Status: http.StatusBadGateway,
-			Body:   []byte(fmt.Sprintf(`{"message":%q}`, err.Error())),
+			Body:   []byte(fmt.Sprintf(`{"message":%q}`, models.UserMessage(err))),
 		})
 	}
 
@@ -90,7 +91,7 @@ func (d *Datasource) callResourceNamespaces(ctx context.Context, sender backend.
 	if err != nil {
 		return sender.Send(&backend.CallResourceResponse{
 			Status: http.StatusInternalServerError,
-			Body:   []byte(fmt.Sprintf(`{"message":%q}`, err.Error())),
+			Body:   []byte(fmt.Sprintf(`{"message":%q}`, models.UserMessage(err))),
 		})
 	}
 

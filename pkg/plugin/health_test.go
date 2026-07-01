@@ -95,12 +95,15 @@ func newTestDatasource(t *testing.T, managerURL, indexerURL string) *Datasource 
 		Username:   "admin",
 		Secrets:    &models.SecretPluginSettings{Password: "secret"},
 	}
-	httpClient := httpclient.New(true)
+	hc, err := httpclient.NewTest(true)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	return &Datasource{
 		settings: settings,
-		wazuhAPI: wazuhapi.NewClient(settings, httpClient),
-		indexer:  indexer.NewClient(settings, httpClient),
+		wazuhAPI: wazuhapi.NewClient(settings, hc),
+		indexer:  indexer.NewClient(settings, hc),
 	}
 }
 
