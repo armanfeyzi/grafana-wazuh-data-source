@@ -2,8 +2,9 @@ package models
 
 import (
 	"errors"
-	"fmt"
 )
+
+const genericUserMessage = "An unexpected error occurred"
 
 // ErrorCode classifies the kind of failure returned by the plugin backends.
 type ErrorCode string
@@ -39,9 +40,6 @@ type WazuhError struct {
 }
 
 func (e *WazuhError) Error() string {
-	if e.Cause != nil {
-		return fmt.Sprintf("%s: %v", e.Message, e.Cause)
-	}
 	return e.Message
 }
 
@@ -72,10 +70,11 @@ func AsWazuhError(err error) (*WazuhError, bool) {
 }
 
 // UserMessage returns the WazuhError.Message if err is (or wraps) a
-// WazuhError, otherwise falls back to err.Error().
+// WazuhError, otherwise returns a generic message that does not expose
+// internal details.
 func UserMessage(err error) string {
 	if we, ok := AsWazuhError(err); ok {
 		return we.Message
 	}
-	return err.Error()
+	return genericUserMessage
 }

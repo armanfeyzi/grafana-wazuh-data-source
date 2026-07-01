@@ -21,13 +21,16 @@ var (
 	_ instancemgmt.InstanceDisposer = (*Datasource)(nil)
 )
 
-func NewDatasource(_ context.Context, settings backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
+func NewDatasource(ctx context.Context, settings backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
 	config, err := models.LoadPluginSettings(settings)
 	if err != nil {
 		return nil, err
 	}
 
-	httpClient := httpclient.New(config.TlsSkipVerify)
+	httpClient, err := httpclient.New(ctx, settings)
+	if err != nil {
+		return nil, err
+	}
 
 	return &Datasource{
 		settings: config,
@@ -135,7 +138,7 @@ func healthError(message string) *backend.CheckHealthResult {
 func wazuhErrToDataResponse(err error) backend.DataResponse {
 	we, ok := models.AsWazuhError(err)
 	if !ok {
-		return backend.ErrDataResponse(backend.StatusInternal, err.Error())
+		return backend.ErrDataResponse(backend.StatusInternal, models.UserMessage(err))
 	}
 
 	switch we.Code {

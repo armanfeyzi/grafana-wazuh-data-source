@@ -220,10 +220,8 @@ func ValidateURL(raw string) error {
 }
 
 // classifyHTTPError maps an HTTP status code to a typed WazuhError with a
-// user-readable message. The password is used only to sanitize the body
-// excerpt so credentials never appear in error output.
+// user-readable message.
 func classifyHTTPError(status int, body []byte, component, password string) *models.WazuhError {
-	excerpt := sanitizeExcerpt(body, password)
 	switch status {
 	case http.StatusUnauthorized:
 		return models.NewWazuhError(models.ErrAuth,
@@ -236,7 +234,7 @@ func classifyHTTPError(status int, body []byte, component, password string) *mod
 			component+": endpoint not found — check the manager URL", nil)
 	default:
 		return models.NewWazuhError(models.ErrBadResponse,
-			fmt.Sprintf("%s returned HTTP %d: %s", component, status, excerpt), nil)
+			fmt.Sprintf("%s returned an unexpected response (HTTP %d)", component, status), nil)
 	}
 }
 
@@ -251,14 +249,3 @@ func classifyNetworkError(err error, component string) *models.WazuhError {
 		component+": cannot connect — check the URL and that the service is running", err)
 }
 
-// sanitizeExcerpt limits body to 200 characters and redacts any password.
-func sanitizeExcerpt(body []byte, password string) string {
-	s := strings.TrimSpace(string(body))
-	if len(s) > 200 {
-		s = s[:200] + "…"
-	}
-	if password != "" {
-		s = strings.ReplaceAll(s, password, "[REDACTED]")
-	}
-	return s
-}

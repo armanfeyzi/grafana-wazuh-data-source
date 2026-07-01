@@ -3,7 +3,6 @@ package indexer
 import (
 	"context"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -30,22 +29,19 @@ func NewClient(settings *models.PluginSettings, httpClient *http.Client) *Client
 func (c *Client) Ping(ctx context.Context) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.baseURL+"/_cluster/health", nil)
 	if err != nil {
-		return fmt.Errorf("build indexer request: %w", err)
+		return models.NewWazuhError(models.ErrBadResponse,
+			"failed to build indexer health request", err)
 	}
 	req.SetBasicAuth(c.username, c.password)
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return fmt.Errorf("indexer unreachable: %w", err)
+		return classifyNetworkError(err)
 	}
 	defer func() { _ = resp.Body.Close() }()
 
-	if resp.StatusCode == http.StatusUnauthorized {
-		return fmt.Errorf("indexer authentication failed")
-	}
 	if resp.StatusCode >= 400 {
-		body, _ := io.ReadAll(io.LimitReader(resp.Body, 512))
-		return fmt.Errorf("indexer returned %s: %s", resp.Status, strings.TrimSpace(string(body)))
+		return classifyHTTPError(resp.StatusCode)
 	}
 
 	return nil

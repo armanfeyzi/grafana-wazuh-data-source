@@ -29,7 +29,11 @@ func TestClientPing(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := NewClient(testSettings(server.URL), httpclient.New(true))
+	hc, err := httpclient.NewTest(true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	client := NewClient(testSettings(server.URL), hc)
 	if err := client.Ping(context.Background()); err != nil {
 		t.Fatalf("Ping() error = %v", err)
 	}
@@ -43,10 +47,20 @@ func TestClientPingAuthFailure(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := NewClient(testSettings(server.URL), httpclient.New(true))
-	err := client.Ping(context.Background())
-	if err == nil || !strings.Contains(err.Error(), "authentication failed") {
-		t.Fatalf("expected authentication error, got %v", err)
+	hc, err := httpclient.NewTest(true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	client := NewClient(testSettings(server.URL), hc)
+	err = client.Ping(context.Background())
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if !models.IsWazuhError(err, models.ErrAuth) {
+		t.Fatalf("expected ErrAuth, got %v", err)
+	}
+	if !strings.Contains(models.UserMessage(err), "authentication failed") {
+		t.Fatalf("expected auth message, got %v", err)
 	}
 }
 

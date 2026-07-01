@@ -33,9 +33,13 @@ func TestExecuteQueryAlertsTimeSeries(t *testing.T) {
 	}))
 	defer indexerServer.Close()
 
+	hc, err := httpclient.NewTest(true)
+	if err != nil {
+		t.Fatal(err)
+	}
 	ds := &Datasource{
 		settings: &models.PluginSettings{IndexerURL: indexerServer.URL},
-		indexer:  indexer.NewClient(&models.PluginSettings{IndexerURL: indexerServer.URL, Username: "admin", Secrets: &models.SecretPluginSettings{Password: "x"}}, httpclient.New(true)),
+		indexer:  indexer.NewClient(&models.PluginSettings{IndexerURL: indexerServer.URL, Username: "admin", Secrets: &models.SecretPluginSettings{Password: "x"}}, hc),
 	}
 
 	from := time.Date(2026, 5, 21, 0, 0, 0, 0, time.UTC)
@@ -82,9 +86,13 @@ func TestExecuteQueryAgents(t *testing.T) {
 		Username:   "admin",
 		Secrets:    &models.SecretPluginSettings{Password: "secret"},
 	}
+	hc, err := httpclient.NewTest(true)
+	if err != nil {
+		t.Fatal(err)
+	}
 	ds := &Datasource{
 		settings: settings,
-		wazuhAPI: wazuhapi.NewClient(settings, httpclient.New(true)),
+		wazuhAPI: wazuhapi.NewClient(settings, hc),
 	}
 
 	resp, err := ds.executeQuery(context.Background(), "A", models.Query{DataType: models.DataTypeAgents}, backend.DataQuery{RefID: "A"})

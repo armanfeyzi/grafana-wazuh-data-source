@@ -12,13 +12,17 @@ func TestWazuhError_Error_withCause(t *testing.T) {
 	cause := fmt.Errorf("connection refused")
 	we := NewWazuhError(ErrUnreachable, "cannot reach indexer", cause)
 
-	msg := we.Error()
-	if msg == "" {
-		t.Fatal("expected non-empty error message")
+	if got := we.Error(); got != "cannot reach indexer" {
+		t.Errorf("expected %q, got %q", "cannot reach indexer", got)
 	}
-	// Must include the user message.
-	if !contains(msg, "cannot reach indexer") {
-		t.Errorf("expected message to contain %q, got %q", "cannot reach indexer", msg)
+}
+
+func TestWazuhError_Error_doesNotExposeCause(t *testing.T) {
+	cause := fmt.Errorf("dial tcp 192.168.1.10:9200: connection refused")
+	we := NewWazuhError(ErrUnreachable, "cannot reach indexer", cause)
+
+	if got := we.Error(); contains(got, "192.168") {
+		t.Errorf("Error() must not expose cause details, got %q", got)
 	}
 }
 
@@ -90,9 +94,9 @@ func TestUserMessage_wazuhError(t *testing.T) {
 }
 
 func TestUserMessage_plainError(t *testing.T) {
-	err := fmt.Errorf("plain")
-	if got := UserMessage(err); got != "plain" {
-		t.Errorf("expected %q, got %q", "plain", got)
+	err := fmt.Errorf("dial tcp 10.0.0.5:443")
+	if got := UserMessage(err); got != "An unexpected error occurred" {
+		t.Errorf("expected %q, got %q", "An unexpected error occurred", got)
 	}
 }
 
