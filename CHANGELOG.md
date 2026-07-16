@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.11] — 2026-07-17
+
+### Changed
+
+- **Dependency security** — Override `websocket-driver` to ^0.7.5 (CVE-2026-54466) and bump Go to 1.26.5 so the release validator passes.
+- **Plugin signing** — Keep signed release pipeline with `GRAFANA_ACCESS_POLICY_TOKEN`.
+
+---
+
 ## [0.2.10] — 2026-07-17
 
 ### Changed
