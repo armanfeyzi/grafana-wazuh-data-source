@@ -1,28 +1,33 @@
 # Grafana Plugin Signing Guide
 
-This document explains how Grafana plugin signing works for public and private plugins, why signing is bypassed in the automated release pipeline, and how to test and run the plugin in your Kubernetes/Grafana cluster.
+This document explains how Grafana plugin signing works for public and private plugins, how the release pipeline signs builds, and how to test the plugin before catalog listing.
 
 ---
 
-## 1. Why `policy_token` is Commented Out in CI/CD
+## 1. Release pipeline signing
 
-For the release pipeline to package the plugin successfully, the `policy_token` input in `.github/workflows/release.yml` is omitted until catalog approval:
+After Grafana catalog approval, release builds are signed automatically via `grafana/plugin-actions/package-plugin` using a Grafana Cloud Access Policy token:
 
 ```yaml
       - name: Build and package plugin
         id: build
         uses: grafana/plugin-actions/package-plugin@package-plugin/v1.2.0
         with:
-          go-version: '1.25.10'
+          go-version: '1.26.4'
+          node-version: '22'
+          policy_token: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
 ```
 
-Release builds install `govulncheck` and attach a [GitHub build provenance attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations) to the ZIP, as required by Grafana catalog review.
+Create the token at Grafana Cloud → **My Account → Security → Access Policies** with scope **`plugins:write`**, then store it as the GitHub Actions secret `GRAFANA_ACCESS_POLICY_TOKEN`.
 
-### The Root Cause: API 409 Conflict
-When a plugin ID is configured as a public community plugin (e.g., `armanfeyzi-wazuh-datasource`), Grafana Cloud's signing API will reject all public signature requests with a `409 Conflict / InvalidArgument` error **until the plugin has been formally approved and registered in the Grafana Plugin Catalog**.
+Release builds also run `govulncheck` and attach a [GitHub build provenance attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations) to the ZIP.
 
-* **For Public Submission:** You do **not** need to sign the plugin yourself. You submit the **unsigned** packaged ZIP archive from your GitHub Releases page to the Grafana review team. Once approved, Grafana's publishing system automatically signs it.
-* **For Private Distribution:** If you wanted to distribute the plugin privately (not via the public catalog), you would sign it as `private` by providing the `SIGN_ROOT_URLS` setting pointing to your private Grafana instances.
+### Historical note (pre-approval)
+
+Until the plugin was approved for the catalog, public signing returned `409 Conflict`. Unsigned ZIPs were submitted for review. That restriction is lifted after approval; new releases must include `MANIFEST.txt`.
+
+* **Public / community plugins:** Sign with `plugins:write` (no `rootUrls`).
+* **Private plugins:** Sign with `--rootUrls` pointing at your Grafana instance roots.
 
 ---
 
@@ -82,11 +87,11 @@ After approval, Grafana signs the plugin and lists it at `grafana.com/grafana/pl
 
 When submitting or updating via Grafana Cloud → My Plugins, use **separate URLs** for the packaged plugin and the source repository:
 
-| Field | Example for version `0.2.8` |
+| Field | Example for version `0.2.10` |
 |-------|-----------------------------|
-| **URL** (plugin ZIP) | `https://github.com/armanfeyzi/grafana-wazuh-data-source/releases/download/v0.2.8/armanfeyzi-wazuh-datasource-0.2.8.zip` |
-| **Source code URL** | `https://github.com/armanfeyzi/grafana-wazuh-data-source/tree/v0.2.8` |
-| **SHA1** | Contents of `armanfeyzi-wazuh-datasource-0.2.8.zip.sha1` from the same GitHub release |
+| **URL** (plugin ZIP) | `https://github.com/armanfeyzi/grafana-wazuh-data-source/releases/download/v0.2.10/armanfeyzi-wazuh-datasource-0.2.10.zip` |
+| **Source code URL** | `https://github.com/armanfeyzi/grafana-wazuh-data-source/tree/v0.2.10` |
+| **SHA1** | Contents of `armanfeyzi-wazuh-datasource-0.2.10.zip.sha1` from the same GitHub release |
 
 Do **not** use the plugin ZIP URL as the source code URL. The source field must point at the Git repository (tagged release branch) so Grafana can run `govulncheck` against `go.mod` and verify GitHub build provenance attestation.
 
