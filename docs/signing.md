@@ -13,7 +13,7 @@ After Grafana catalog approval, release builds are signed automatically via `gra
         id: build
         uses: grafana/plugin-actions/package-plugin@package-plugin/v1.2.0
         with:
-          go-version: '1.26.4'
+          go-version: '1.26.5'
           node-version: '22'
           policy_token: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
 ```
