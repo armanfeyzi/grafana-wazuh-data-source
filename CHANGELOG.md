@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.13] — 2026-07-24
+
+### Changed
+
+- **Dependency security** — Bump `google.golang.org/grpc` (indirect, via SDK tracing) to v1.82.1 (GHSA-hrxh-6v49-42gf). Surfaced by the catalog validator's `osv-scanner` scan of `go.mod` on the v0.2.12 release run; not caught by earlier local checks because those only covered the npm lockfile. Reproduced locally with `osv-scanner --lockfile go.mod` before this release and confirmed 0 vulnerabilities.
+
+---
+
 ## [0.2.12] — 2026-07-24
 
 ### Changed
