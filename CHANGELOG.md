@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.12] — 2026-07-24
+
+### Changed
+
+- **Dependency security** — Override `js-yaml` (both the 3.x and 4.x lines pulled in transitively), `brace-expansion` (1.x and 5.x lines), `fast-uri`, `immutable`, `js-cookie`, `protobufjs`, and `uuid` (pinned by `@grafana/ui`) to versions that clear the catalog's `osv-scanner` critical/high severity gate. Verified locally with `osv-scanner` (0 critical, 0 high remaining) before resubmission.
+
+---
+
 ## [0.2.11] — 2026-07-17
 
 ### Changed
